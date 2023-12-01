@@ -1,0 +1,246 @@
+#include <GUIConstantsEx.au3>
+#include <MsgBoxConstants.au3>
+#include <FileConstants.au3>
+#include <EditConstants.au3>
+#include <WindowsConstants.au3>
+#include <WinAPIShPath.au3>
+
+MDictGUI()
+
+Func MDictGUI()
+$hGUI1 = GUICreate("mdictGui 0.5", 536, 605, 192, 125)
+
+$GroupPackMDX = GUICtrlCreateGroup("Pack MDX", 24, 16, 393, 129)
+$idButton_Descr = GUICtrlCreateButton("Descripton", 50, 34, 80, 22)
+$idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 50, 72, 80, 22)
+GUICtrlCreateInput("File Descripton(UTF8)", 140, 34, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+GUICtrlCreateInput("Source Mdict", 140, 72, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+$idButton_Pack = GUICtrlCreateButton("Make MDX", 50, 103, 80, 22)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+$GroupUnPackMDX = GUICtrlCreateGroup("UnPack MDX", 25, 166, 393, 97)
+$idButton_BrowsePack = GUICtrlCreateButton("Select MDX", 44, 192, 80, 22)
+GUICtrlCreateInput("File MDX", 134, 192, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+$idButton_UnPack = GUICtrlCreateButton("Unpack MDX", 44, 223, 80, 22)
+$idButton_Meta = GUICtrlCreateButton("Show Meta info", 314, 232, 80, 22)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+$GroupPackMDD = GUICtrlCreateGroup("Pack MDD", 29, 282, 393, 129)
+$idButton_DescrMDD = GUICtrlCreateButton("Descripton", 55, 300, 80, 22)
+$idButton_BrowseDir = GUICtrlCreateButton("Folder MDD", 55, 338, 80, 22)
+GUICtrlCreateInput("Dir MDD", 145, 338, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+$idButton_PackMDD = GUICtrlCreateButton("Make MDD", 55, 369, 80, 22)
+GUICtrlCreateInput("File Descripton(UTF8)", 145, 300, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+$GroupUnPackMDD = GUICtrlCreateGroup("UnPack MDD", 30, 432, 393, 97)
+$idButton_BrowseMDD = GUICtrlCreateButton("Select MDD", 49, 458, 80, 22)
+$idButton_UnMDD = GUICtrlCreateButton("Unpack MDD", 49, 489, 80, 22)
+GUICtrlCreateInput("File MDD", 139, 458, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+GUISetState(@SW_SHOW)
+        Local $iPIDPack = 0
+	    Local $iPIDUnPack = 0
+		Local $iPIDPackMDD = 0
+	    Local $iPIDUnMDD = 0
+		$iPIDMeta =0
+		Local  $sDesc=0
+		Local  $sUnp=0
+		Local  $sPack=0
+		Local  $sDescMDD=0
+		Local  $sUnMDD=0
+		Local  $sPackMDD=0
+
+	; Display the GUI
+	GUISetState(@SW_SHOW, $hGUI1)
+
+	   ; Display a message of whether the file exists or Exit.
+	   Local $iFileExists = FileExists("mdict.exe")
+	   If $iFileExists Then
+           Else
+If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF & "Pls visit, " & "github/liuyug/mdict-utils" & @CRLF & "to download last 'mdict-windows'."& @CRLF & "Put mdictGui to 'mdict-windows'." & @CRLF) = 1 Then ShellExecute("https://github.com/liuyug/mdict-utils/releases")
+             Exit
+		EndIf
+
+		; Initialize a Local RUN script.
+	    Local $aMsg = 0
+				RunWait(@ComSpec & " /c %SystemDrive%&&cd %temp%&&echo %cd%>temp.tmp", "", @SW_hide); create temp file to save %cd%
+                $file = FileOpen(@TempDir & "\temp.tmp", 0)
+                $line = FileReadLine($file)
+		;------------------------------
+		Local $aMsg = 0
+	While 1
+       ; Assign to $aMsg the advanced GUI messages.
+		$aMsg = GUIGetMsg($GUI_EVENT_ARRAY)
+
+	    ; Switch from event Open_Descr--------------------------------------1
+				Switch $aMsg[0]
+					Case $GUI_EVENT_CLOSE
+						ExitLoop
+					Case $idButton_Descr
+        $sMessageDescr = "Please select a description file."
+    $Descr = FileOpenDialog($sMessageDescr, @WindowsDir & "\", "Description File (*.*)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+If @error Then
+	Else
+    $Descr = StringReplace($Descr, "|", @CRLF)
+        GUICtrlCreateInput($Descr, 140, 34, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
+		; Check file is encoding of UTF
+		Local $iEncoding = FileGetEncoding($Descr) ; Retrieve the file encoding of the current script.
+	If @error Then
+		MsgBox(4096, "", "Error: Could not obtain the file encoding.")
+	ElseIf Not($iEncoding =256) + ($iEncoding =128) Then
+		MsgBox(4096, "", "You selected file Description:" & @CRLF & $Descr& @CRLF & @CRLF &"    Description is not UTF 8 !")
+    Else
+		$sDesc=1
+         EndIf
+    EndIf
+			EndSwitch
+                 ; Switch from event OpenTXT-------------------------------2
+				Switch $aMsg[0]
+					Case $GUI_EVENT_CLOSE
+
+					Case $idButton_BrowseUnp
+        $sMessageUnp = "Please select your Mdict source file."
+    $Unp = FileOpenDialog($sMessageUnp, @WindowsDir & "\", "Mdict source (*.txt;*.mtxt)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+If @error Then
+    Else
+    $Unp = StringReplace($Unp, "|", @CRLF)
+	$Un_=_WinAPI_PathRemoveExtension($Unp)
+	$Un_=_WinAPI_PathRemoveExtension($Un_)
+		$sUnp=1
+        GUICtrlCreateInput($Unp, 140, 72, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
+	EndIf
+			EndSwitch
+				; Switch from event OpenMDX----------------------------------------3
+			    Switch $aMsg[0]
+					Case $idButton_BrowsePack
+		$sMessagePack = "Please select an MDX file."
+     $Pack = FileOpenDialog($sMessagePack, @WindowsDir & "\", "Mdict file (*.mdx)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+	If @error Then
+	Else
+     $Pack = StringReplace($Pack, "|", @CRLF)
+		$sPack=1
+		GUICtrlCreateInput($Pack, 134, 192, 260, 32, $ES_MULTILINE,$WS_EX_CLIENTEDGE)
+
+	EndIf
+			EndSwitch
+				; Switch from event Button_Pack-----------------------------------4
+				Switch $aMsg[0]
+				    Case $idButton_Pack
+				 If $sUnp = 0 Then
+				   MsgBox(4096, "", "You are not chosen Mdict source")
+			  Else
+				 If $sDesc = 0 Then
+                   MsgBox(4096, "","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF &"will be pack as:"&$Un_&".mdx")
+				   $iPIDPack = Run("mdict -a "&$Unp&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+				 Else
+				   MsgBox(4096, "","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF &"will be pack as:"&$Un_&".mdx")
+				   $iPIDPack = Run("mdict --description "&$Descr&" -a "&$Unp&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+		        EndIf
+			       EndIf
+			EndSwitch
+			  				; Switch from event Button_UnPack-------------------------5
+				Switch $aMsg[0]
+					Case $idButton_UnPack
+			     If $sPack = 0 Then
+				   MsgBox(4096, "", "You are not chosen MDX file")
+				 Else
+				   MsgBox(4096, "","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpacked in dir: MDX")
+				   $iPIDUnPack = Run("mdict -x "&$Pack&" -d ./mdx", "", @SW_SHOWNORMAL)
+			EndIf
+				EndSwitch
+						    ; Switch from event Button_Metainfo---------------------6
+				Switch $aMsg[0]
+					Case $idButton_Meta
+			     If $sPack = 0 Then
+				   MsgBox(4096, "", "You are not chosen MDX file")
+				 Else
+				   Run("cmd /c",@SW_SHOW)
+				   $iPIDMeta = Run(@ComSpec & " /k "&$line&"\mdict.exe -m "&$Pack&"", "", @SW_SHOWNORMAL)
+			EndIf
+				EndSwitch
+
+;=====================================================================================================================
+	    ; Switch from event Open_Descr--------------------------------7
+				Switch $aMsg[0]
+					Case $GUI_EVENT_CLOSE
+						ExitLoop
+					Case $idButton_DescrMDD
+        $sMessageDescrMDD = "Please select a description file."
+    $DescrMDD = FileOpenDialog($sMessageDescrMDD, @WindowsDir & "\", "Description File (*.*)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+If @error Then
+	Else
+    $DescrMDD = StringReplace($DescrMDD, "|", @CRLF)
+        GUICtrlCreateInput($DescrMDD, 145, 300, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
+		; Check file is encoding of UTF
+		Local $iEncodingMDD = FileGetEncoding($DescrMDD) ; Retrieve the file encoding of the current script.
+	If @error Then
+		MsgBox(4096, "", "Error: Could not obtain the file encoding.")
+	ElseIf Not($iEncodingMDD =256) + ($iEncodingMDD =128) Then
+		MsgBox(4096, "", "You selected file Description:" & @CRLF & $DescrMDD& @CRLF & @CRLF &"    Description is not UTF 8 !")
+    Else
+		$sDescMDD=1
+         EndIf
+    EndIf
+			EndSwitch
+                 ; Switch from event OpenTXT----------------------8
+				Switch $aMsg[0]
+					Case $GUI_EVENT_CLOSE
+
+					Case $idButton_BrowseDir
+        $sMessageUnpMDD = "Please select your Mdd folder."
+    $UnpMDD = FileSelectFolder($sMessageUnpMDD, "")
+If @error Then
+    Else
+		$sUnMDD=1
+        GUICtrlCreateInput($UnpMDD, 145, 338, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
+	EndIf
+			EndSwitch
+				; Switch from event OpenMDX------------------------------9
+			    Switch $aMsg[0]
+					Case $idButton_BrowseMDD
+		$sMessagePackMDD = "Please select an MDD file."
+     $PackMDD = FileOpenDialog($sMessagePackMDD, @WindowsDir & "\", "MDD file (*.mdd)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+	If @error Then
+	Else
+     $PackMDD = StringReplace($PackMDD, "|", @CRLF)
+		$sPackMDD=1
+		GUICtrlCreateInput($PackMDD, 139, 458, 260, 32, $ES_MULTILINE,$WS_EX_CLIENTEDGE)
+	EndIf
+			EndSwitch
+				; Switch from event Button_Pack--------------------------10
+				Switch $aMsg[0]
+				    Case $idButton_PackMDD
+				 If $sUnMDD = 0 Then
+				   MsgBox(4096, "", "You are not chosen MDD source")
+			  Else
+				 If $sDescMDD = 0 Then
+                   MsgBox(4096, "","You choose MDD source:"& @CRLF & ""&$UnpMDD&""& @CRLF &"will be packed without Description as:"& @CRLF &$UnpMDD&".mdd")
+				   $iPIDPackMDD = Run("mdict -a "&$UnpMDD&" "&$UnpMDD&".mdd", "", @SW_SHOWNORMAL)
+				 Else
+				   MsgBox(4096, "","You choose Mdict source:"& @CRLF & ""&$UnpMDD&""& @CRLF &"will be pack as:"&$UnpMDD&".mdd")
+				   $iPIDPackMDD = Run("mdict --description "&$DescrMDD&" -a "&$UnpMDD&" "&$UnpMDD&".mdd", "", @SW_SHOWNORMAL)
+		        EndIf
+			       EndIf
+			EndSwitch
+			  				; Switch from event Button_UnPack---------------11
+				Switch $aMsg[0]
+					Case $idButton_UnMDD
+			     If $sPackMDD = 0 Then
+				   MsgBox(4096, "", "You are not chosen MDD file")
+				 Else
+				   MsgBox(4096, "","You choose MDD file:"& @CRLF & ""&$PackMDD&""& @CRLF &"will be unpacked in dir: MDD")
+				   $iPIDUnMDD = Run("mdict -x "&$PackMDD&" -d ./mdd", "", @SW_SHOWNORMAL)
+			     EndIf
+			EndSwitch
+
+	WEnd
+	Run(@ComSpec & " /c taskkill /IM cmd.exe /F","",@SW_HIDE)
+	GUIDelete($hGUI1)
+	If $iPIDPack  Then ProcessClose($iPIDPack )
+	If $iPIDUnPack Then ProcessClose($iPIDUnPack)
+	If $iPIDPackMDD  Then ProcessClose($iPIDPackMDD )
+	If $iPIDUnMDD Then ProcessClose($iPIDUnMDD)
+	If $iPIDMeta Then ProcessClose($iPIDMeta)
+EndFunc
