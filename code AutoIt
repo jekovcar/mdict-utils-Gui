@@ -8,7 +8,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.5", 536, 605, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.5.1", 536, 605, 192, 125)
 
 $GroupPackMDX = GUICtrlCreateGroup("Pack MDX", 24, 16, 393, 129)
 $idButton_Descr = GUICtrlCreateButton("Descripton", 50, 34, 80, 22)
@@ -16,6 +16,7 @@ $idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 50, 72, 80, 22)
 GUICtrlCreateInput("File Descripton(UTF8)", 140, 34, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 GUICtrlCreateInput("Source Mdict", 140, 72, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 $idButton_Pack = GUICtrlCreateButton("Make MDX", 50, 103, 80, 22)
+$idButton_vers = GUICtrlCreateButton("MdictVers", 440, 16, 58, 24)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupUnPackMDX = GUICtrlCreateGroup("UnPack MDX", 25, 166, 393, 97)
@@ -44,7 +45,8 @@ GUISetState(@SW_SHOW)
 	    Local $iPIDUnPack = 0
 		Local $iPIDPackMDD = 0
 	    Local $iPIDUnMDD = 0
-		$iPIDMeta =0
+		Local $iPIDMeta =0
+		Local $iPIDvers =0
 		Local  $sDesc=0
 		Local  $sUnp=0
 		Local  $sPack=0
@@ -74,7 +76,7 @@ If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF 
        ; Assign to $aMsg the advanced GUI messages.
 		$aMsg = GUIGetMsg($GUI_EVENT_ARRAY)
 
-	    ; Switch from event Open_Descr--------------------------------------1
+	    ; Switch from event Open_Descr------------1
 				Switch $aMsg[0]
 					Case $GUI_EVENT_CLOSE
 						ExitLoop
@@ -96,7 +98,7 @@ If @error Then
          EndIf
     EndIf
 			EndSwitch
-                 ; Switch from event OpenTXT-------------------------------2
+                 ; Switch from event OpenTXT---------------2
 				Switch $aMsg[0]
 					Case $GUI_EVENT_CLOSE
 
@@ -112,7 +114,7 @@ If @error Then
         GUICtrlCreateInput($Unp, 140, 72, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
 	EndIf
 			EndSwitch
-				; Switch from event OpenMDX----------------------------------------3
+				; Switch from event OpenMDX---------------3
 			    Switch $aMsg[0]
 					Case $idButton_BrowsePack
 		$sMessagePack = "Please select an MDX file."
@@ -125,7 +127,7 @@ If @error Then
 
 	EndIf
 			EndSwitch
-				; Switch from event Button_Pack-----------------------------------4
+				; Switch from event Button_Pack---------------4
 				Switch $aMsg[0]
 				    Case $idButton_Pack
 				 If $sUnp = 0 Then
@@ -150,7 +152,7 @@ If @error Then
 				   $iPIDUnPack = Run("mdict -x "&$Pack&" -d ./mdx", "", @SW_SHOWNORMAL)
 			EndIf
 				EndSwitch
-						    ; Switch from event Button_Metainfo---------------------6
+						    ; Switch from event Button_Metainfo------------------------6
 				Switch $aMsg[0]
 					Case $idButton_Meta
 			     If $sPack = 0 Then
@@ -161,8 +163,16 @@ If @error Then
 			EndIf
 				EndSwitch
 
-;=====================================================================================================================
-	    ; Switch from event Open_Descr--------------------------------7
+							; Switch from event Button_Mdict_version-------------------7
+				Switch $aMsg[0]
+					Case $idButton_vers
+                   Run("cmd /c",@SW_SHOW)
+				   $iPIDvers = Run(@ComSpec & " /k "&$line&"\mdict.exe --version", "", @SW_SHOWNORMAL)
+				EndSwitch
+
+           ;===========================PID Buttons zone=========================
+
+	    ;                Switch from event Open_Descr-------------------------------8
 				Switch $aMsg[0]
 					Case $GUI_EVENT_CLOSE
 						ExitLoop
@@ -184,7 +194,7 @@ If @error Then
          EndIf
     EndIf
 			EndSwitch
-                 ; Switch from event OpenTXT----------------------8
+                 ; Switch from event OpenTXT----------------------------------------9
 				Switch $aMsg[0]
 					Case $GUI_EVENT_CLOSE
 
@@ -197,7 +207,7 @@ If @error Then
         GUICtrlCreateInput($UnpMDD, 145, 338, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
 	EndIf
 			EndSwitch
-				; Switch from event OpenMDX------------------------------9
+				; Switch from event OpenMDX----------------------------------------10
 			    Switch $aMsg[0]
 					Case $idButton_BrowseMDD
 		$sMessagePackMDD = "Please select an MDD file."
@@ -209,7 +219,7 @@ If @error Then
 		GUICtrlCreateInput($PackMDD, 139, 458, 260, 32, $ES_MULTILINE,$WS_EX_CLIENTEDGE)
 	EndIf
 			EndSwitch
-				; Switch from event Button_Pack--------------------------10
+				; Switch from event Button_Pack------------------------------------11
 				Switch $aMsg[0]
 				    Case $idButton_PackMDD
 				 If $sUnMDD = 0 Then
@@ -224,7 +234,7 @@ If @error Then
 		        EndIf
 			       EndIf
 			EndSwitch
-			  				; Switch from event Button_UnPack---------------11
+			  		; Switch from event Button_UnPack------------------------12
 				Switch $aMsg[0]
 					Case $idButton_UnMDD
 			     If $sPackMDD = 0 Then
@@ -243,4 +253,5 @@ If @error Then
 	If $iPIDPackMDD  Then ProcessClose($iPIDPackMDD )
 	If $iPIDUnMDD Then ProcessClose($iPIDUnMDD)
 	If $iPIDMeta Then ProcessClose($iPIDMeta)
-EndFunc
+	If $iPIDvers Then ProcessClose($iPIDvers)
+EndFunc   ;==========
