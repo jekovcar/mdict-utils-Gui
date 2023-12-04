@@ -8,10 +8,11 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.6", 517, 516, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.6.1", 517, 516, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
-$idButton_vers = GUICtrlCreateButton("MdictVers", 440, 16, 58, 24)
+$idButton_upd = GUICtrlCreateButton("GuiUpdate", 440, 16, 58, 24)
+$idButton_vers = GUICtrlCreateButton("MdictVers", 440, 50, 58, 24)
 GUICtrlCreateInput("File Descripton(UTF8)", 140, 14, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 
 $GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 56, 393, 88)
@@ -59,6 +60,11 @@ GUISetState(@SW_SHOW)
 		Local $iPIDvers =0
 		Local $iPIDconv_db = 0
 		Local $iPIDUn_db = 0
+		Local $iPIDPack_all = 0
+		Local $iPIDUnPack_db = 0
+		Local $iPIDUnMDD_db = 0
+		Local $iPIDUnPack_zip = 0
+		Local $iPIDUnPackSplit = 0
 		Local  $sDesc=0
 		Local  $sUnp=0
 		Local  $sPack=0
@@ -69,24 +75,26 @@ GUISetState(@SW_SHOW)
 	; Display the GUI
 	GUISetState(@SW_SHOW, $hGUI1)
 
-	   ; Display a message of whether the file exists or Exit.
-	   Local $iFileExists = FileExists("mdict.exe")
+		; Display a message of whether the file exists or Exit.
+	        Local $iFileExists = FileExists("mdict.exe")
 	   If $iFileExists Then
-           Else
-If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF & "Pls visit, " & "github/liuyug/mdict-utils" & @CRLF & _
-"to download last 'mdict-windows'."& @CRLF & "Put mdictGui to 'mdict-windows'." & @CRLF) = 1 Then ShellExecute("https://github.com/liuyug/mdict-utils/releases")
-             Exit
-		EndIf
+            Else
+       If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF & _
+           "Pls visit, " & "github/liuyug/mdict-utils" & @CRLF & _
+           "to download last 'mdict-windows'."& @CRLF & "Put mdictGui to 'mdict-windows'." & @CRLF) _
+		   = 1 Then ShellExecute("https://github.com/liuyug/mdict-utils/releases")
+               Exit
+		    EndIf
 
 		; Initialize a Local RUN script.
-	    Local $aMsg = 0
+	        Local $aMsg = 0
 				RunWait(@ComSpec & " /c %SystemDrive%&&cd %temp%&&echo %cd%>temp.tmp", "", @SW_hide); create temp file to save %cd%
                 $file = FileOpen(@TempDir & "\temp.tmp", 0)
                 $line = FileReadLine($file)
 		;------------------------------
-		Local $aMsg = 0
+		    Local $aMsg = 0
 	While 1
-       ; Assign to $aMsg the advanced GUI messages.
+			; Assign to $aMsg the advanced GUI messages.
 		        $aMsg = GUIGetMsg($GUI_EVENT_ARRAY)
 				Switch $aMsg[0]
 					Case $GUI_EVENT_CLOSE
@@ -241,7 +249,7 @@ If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF 
 			     EndIf
 				EndSwitch
 
-				; Switch from event Button_UnPack MDD------------------------------12
+				; Switch from event Button_UnPackMDD to Sqlite3-db------------------12
 				Switch $aMsg[0]
 					Case $idButton_UnpSqlite3
 			     If $sPackMDD = 0 Or $sExt = "mdd"  Then
@@ -252,7 +260,7 @@ If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF 
 			     EndIf
 				EndSwitch
 
-				; Switch from event Button_ConvSqlit-------------------------------13
+				; Switch from event Button_Conv TXT Sql3----------------------------13
 				Switch $aMsg[0]
 				    Case $idButton_ConvSqlit
 				 If $sUnp = 0 Then
@@ -263,7 +271,7 @@ If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF 
 			       EndIf
 				EndSwitch
 
-				; Switch from event Button_PackDir--------------------------------14
+				; Switch from event Button_Pack All TXT----------------------------14
 				Switch $aMsg[0]
 				    Case $idButton_PackDir
 				 If $sUnp = 0 Then
@@ -272,11 +280,11 @@ If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF 
 				 If $sDesc = 0 Then
                  MsgBox(4096, "","In selected Mdict Folder :"& @CRLF & _
 				 ""&$UnpDir&""& @CRLF & "all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\All.mdx")
-			$iPIDPack = Run("mdict -a "&$UnpDir&" "&$UnpDir&"\All.mdx", "", @SW_SHOWNORMAL)
+			$iPIDPack_all = Run("mdict -a "&$UnpDir&" "&$UnpDir&"\All.mdx", "", @SW_SHOWNORMAL)
 				 Else
 		        MsgBox(4096, "","In selected Mdict Folder :"& @CRLF & _
 				""&$UnpDir&""& @CRLF &"all TXT will be pack as :"& @CRLF&$UnpDir&"\All_descr.mdx")
-			$iPIDPack = Run("mdict --description "&$Descr&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
+			$iPIDPack_all = Run("mdict --description "&$Descr&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
 		        EndIf
 			       EndIf
 				EndSwitch
@@ -288,7 +296,7 @@ If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF 
 				   MsgBox(4096, "", "You are not chosen MDX file")
 				 Else
 				   MsgBox(4096, "","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpack as: db")
-				   $iPIDUnPack = Run("mdict -x "&$Pack&" --exdb", "", @SW_SHOWNORMAL)
+				   $iPIDUnPack_db = Run("mdict -x "&$Pack&" --exdb", "", @SW_SHOWNORMAL)
 			EndIf
 				EndSwitch
 
@@ -299,28 +307,28 @@ If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF 
 				   MsgBox(4096, "", "You are not chosen MDD file")
 				 Else
 				   MsgBox(4096, "","You choose MDD file:"& @CRLF & ""&$PackMDD&""& @CRLF &"will be unpack as: db")
-				   $iPIDUnMDD = Run("mdict -x "&$PackMDD&" --exdb", "", @SW_SHOWNORMAL)
+				   $iPIDUnMDD_db = Run("mdict -x "&$PackMDD&" --exdb", "", @SW_SHOWNORMAL)
 			     EndIf
 				EndSwitch
 
-				; Switch from event Button_UnPackMDX to DB-------------------------17
+				; Switch from event Button_UnPackMDX to DBzip-----------------------17
 				Switch $aMsg[0]
 					Case $idButton_UnpMDX_DBzip
 			     If $sPack = 0 Then
 				   MsgBox(4096, "", "You are not chosen MDX file")
 				 Else
 				   MsgBox(4096, "","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpack as compressed: db(zip)")
-				   $iPIDUnPack = Run("mdict -x "&$Pack&" --exdb-zip", "", @SW_SHOWNORMAL)
+				   $iPIDUnPack_zip = Run("mdict -x "&$Pack&" --exdb-zip", "", @SW_SHOWNORMAL)
 			EndIf
 				EndSwitch
 
-                ; Switch from event Select ComboSplit Parts-------------------------18
+                              ; Switch from event Select Combo Split Parts-------------------------18
 				Switch $aMsg[0]
 			        Case $ComboSplit
 				$sComboRead = GUICtrlRead($ComboSplit)
 				EndSwitch
 
-				; Switch from event Button_UnPack MDX ------------------------------19
+		              ; Switch from event Button_UnPack MDX Parts--------------------------19
 				Switch $aMsg[0]
 					Case $idButton_UnpSplit
 			     If $sPack = 0  Then
@@ -330,9 +338,16 @@ If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF 
 					 MsgBox(4096, "", "You are not chosen Splits: " & $sComboRead)
 					 Else
 				   MsgBox(4096, "","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpacked into "&$sComboRead&" parts in dir: MDX")
-				   $iPIDUnPack = Run("mdict -x "&$Pack&" -d ./mdx --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
+				   $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdx --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
 					 EndIf
 			EndIf
+				EndSwitch
+
+                              ; Switch from event Button GuiUpdate-------------------------------20
+				Switch $aMsg[0]
+			        Case $idButton_upd
+				If MsgBox(262209,"Check the latest mdictGui releases", "Want to check the GitHub repository"& @CRLF & _
+				"for the latest mdictGui releases?") = 1 Then ShellExecute("https://github.com/jekovcar/mdict-utils-Gui/releases")
 				EndSwitch
 
 	WEnd
@@ -346,4 +361,9 @@ If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF 
 	If $iPIDvers Then ProcessClose($iPIDvers)
 	If $iPIDconv_db Then ProcessClose($iPIDconv_db)
 	If $iPIDUn_db Then ProcessClose($iPIDUn_db)
+	If $iPIDPack_all Then ProcessClose($iPIDPack_all)
+	If $iPIDUnPack_db Then ProcessClose($iPIDUnPack_db)
+	If $iPIDUnMDD_db Then ProcessClose($iPIDUnMDD_db)
+	If $iPIDUnPack_zip Then ProcessClose($iPIDUnPack_zip)
+	If $iPIDUnPackSplit Then ProcessClose($iPIDUnPackSplit)
 EndFunc   ;==========
