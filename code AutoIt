@@ -8,11 +8,11 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.6.1", 517, 516, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.6.2", 517, 516, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
-$idButton_upd = GUICtrlCreateButton("GuiUpdate", 440, 16, 58, 24)
-$idButton_vers = GUICtrlCreateButton("MdictVers", 440, 50, 58, 24)
+$idButton_upd = GUICtrlCreateButton("GuiUpdate", 440, 16, 60, 24)
+$idButton_vers = GUICtrlCreateButton("MdictVers", 440, 50, 60, 24)
 GUICtrlCreateInput("File Descripton(UTF8)", 140, 14, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 
 $GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 56, 393, 88)
@@ -20,15 +20,15 @@ $idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 45, 72, 80, 22)
 GUICtrlCreateInput("Source Mdict", 140, 72, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 $idButton_Pack = GUICtrlCreateButton("Make MDX", 45, 110, 80, 22)
 $idButton_PackDir = GUICtrlCreateButton("Pack All TXT", 140, 110, 80, 22)
-$idButton_ConvSqlit = GUICtrlCreateButton("Conv TXT Sql3", 315, 110, 80, 22)
+$idButton_ConvSqlit = GUICtrlCreateButton("Conv TXT Sql3", 315, 110, 84, 22)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupUnPackMDX = GUICtrlCreateGroup("UnPack MDX", 25, 166, 473, 100)
 $idButton_BrowsePack = GUICtrlCreateButton("Select MDX", 45, 192, 80, 22)
 GUICtrlCreateInput("File MDX", 134, 192, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 $idButton_UnPack = GUICtrlCreateButton("Unpack MDX", 44, 232, 80, 22)
-$idButton_UnpMDX_DBzip = GUICtrlCreateButton("UnpMDX DBzip", 224, 232, 80, 22)
-$idButton_Meta = GUICtrlCreateButton("Show Meta info", 400, 192, 80, 22)
+$idButton_UnpMDX_DBzip = GUICtrlCreateButton("UnpMDX DBzip", 224, 232, 84, 22)
+$idButton_Meta = GUICtrlCreateButton("Show Meta info", 400, 192, 84, 22)
 $idButton_UnpMDX_DB = GUICtrlCreateButton("UnpMDX DB", 133, 232, 80, 22)
 $idButton_UnpSplit = GUICtrlCreateButton("UnpSplit MDX", 315, 232, 80, 22)
 $ComboSplit = GUICtrlCreateCombo("0", 400, 232, 43, 25)
@@ -48,8 +48,12 @@ $idButton_BrowseMDD = GUICtrlCreateButton("Select File", 45, 410, 80, 22)
 $idButton_UnMDD = GUICtrlCreateButton("Unpack MDD", 45, 450, 80, 22)
 GUICtrlCreateInput("File MDD or DB", 139, 410, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 $idButton_UnpMDD_DB = GUICtrlCreateButton("UnpMDD DB", 136, 450, 80, 22)
-$idButton_UnpSqlite3 = GUICtrlCreateButton("Conv Sql3 TXT", 315, 450, 80, 22)
+$idButton_UnpSqlite3 = GUICtrlCreateButton("Conv Sql3 TXT", 315, 450, 84, 22)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+GUICtrlCreateLabel("Paths and file names must not contain spaces", 96, 488, 282, 20)
+GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
+GUICtrlSetColor(-1, 0x0000FF)
 
 GUISetState(@SW_SHOW)
         Local $iPIDPack = 0
@@ -158,7 +162,8 @@ GUISetState(@SW_SHOW)
 				   MsgBox(4096, "", "You are not chosen Mdict source")
 			  Else
 				 If $sDesc = 0 Then
-                   MsgBox(4096, "","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF &"will be pack without Description as:"&$Un_&".mdx")
+                   MsgBox(4096, "","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF & _
+				   "will be pack without Description as:"&$Un_&".mdx")
 				   $iPIDPack = Run("mdict -a "&$Unp&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
 				 Else
 				   MsgBox(4096, "","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF &"will be pack as:"&$Un_&".mdx")
@@ -317,18 +322,23 @@ GUISetState(@SW_SHOW)
 			     If $sPack = 0 Then
 				   MsgBox(4096, "", "You are not chosen MDX file")
 				 Else
-				   MsgBox(4096, "","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpack as compressed: db(zip)")
-				   $iPIDUnPack_zip = Run("mdict -x "&$Pack&" --exdb-zip", "", @SW_SHOWNORMAL)
-			EndIf
+				$Pack_=_WinAPI_PathRemoveExtension($Pack)
+				$Pack_=_WinAPI_PathRemoveExtension($Pack_)
+				   FileCopy($Pack, $Pack_&"_zip.mdx", $FC_OVERWRITE)
+				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&"_zip.mdx --exdb-zip", "", @SW_SHOWNORMAL)
+				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db zip!"&@CRLF & @CRLF & _
+				   "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as compressed:"& @CRLF &$Pack_&"_zip.db")
+				   FileDelete($Pack_&"_zip.mdx")
+				  EndIf
 				EndSwitch
 
-                              ; Switch from event Select Combo Split Parts-------------------------18
+                ; Switch from event Select Combo Split Parts-------------------------18
 				Switch $aMsg[0]
 			        Case $ComboSplit
 				$sComboRead = GUICtrlRead($ComboSplit)
 				EndSwitch
 
-		              ; Switch from event Button_UnPack MDX Parts--------------------------19
+				; Switch from event Button_UnPack MDX Parts--------------------------19
 				Switch $aMsg[0]
 					Case $idButton_UnpSplit
 			     If $sPack = 0  Then
@@ -343,13 +353,12 @@ GUISetState(@SW_SHOW)
 			EndIf
 				EndSwitch
 
-                              ; Switch from event Button GuiUpdate-------------------------------20
+                ; Switch from event Button GuiUpdate-------------------------------20
 				Switch $aMsg[0]
 			        Case $idButton_upd
 				If MsgBox(262209,"Check the latest mdictGui releases", "Want to check the GitHub repository"& @CRLF & _
 				"for the latest mdictGui releases?") = 1 Then ShellExecute("https://github.com/jekovcar/mdict-utils-Gui/releases")
 				EndSwitch
-
 	WEnd
 	Run(@ComSpec & " /c taskkill /IM cmd.exe /F","",@SW_HIDE)
 	GUIDelete($hGUI1)
@@ -366,4 +375,5 @@ GUISetState(@SW_SHOW)
 	If $iPIDUnMDD_db Then ProcessClose($iPIDUnMDD_db)
 	If $iPIDUnPack_zip Then ProcessClose($iPIDUnPack_zip)
 	If $iPIDUnPackSplit Then ProcessClose($iPIDUnPackSplit)
-EndFunc   ;==========
+	EndFunc   ;==========
+
