@@ -8,11 +8,16 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.6.2", 517, 516, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.6.3", 517, 516, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
+GUICtrlSetTip(-1, "Select File Descripton in UTF8")
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 440, 16, 60, 24)
-$idButton_vers = GUICtrlCreateButton("MdictVers", 440, 50, 60, 24)
+GUICtrlSetTip(-1, "GitHub mdictGui")
+$idButton_vers = GUICtrlCreateButton("MdictVers", 440, 90, 60, 24)
+GUICtrlSetTip(-1, "Display Mdict-utils version")
+$idButton_pypi = GUICtrlCreateButton("MdictUpd", 440, 50, 60, 24)
+GUICtrlSetTip(-1, "pypi.org/project/mdict-utils/")
 GUICtrlCreateInput("File Descripton(UTF8)", 140, 14, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 
 $GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 56, 393, 88)
@@ -20,7 +25,9 @@ $idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 45, 72, 80, 22)
 GUICtrlCreateInput("Source Mdict", 140, 72, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 $idButton_Pack = GUICtrlCreateButton("Make MDX", 45, 110, 80, 22)
 $idButton_PackDir = GUICtrlCreateButton("Pack All TXT", 140, 110, 80, 22)
+GUICtrlSetTip(-1, "Pack MDX with many TXT files")
 $idButton_ConvSqlit = GUICtrlCreateButton("Conv TXT Sql3", 315, 110, 84, 22)
+GUICtrlSetTip(-1, "Convert TXT to sqlite3 DB")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupUnPackMDX = GUICtrlCreateGroup("UnPack MDX", 25, 166, 473, 100)
@@ -28,9 +35,13 @@ $idButton_BrowsePack = GUICtrlCreateButton("Select MDX", 45, 192, 80, 22)
 GUICtrlCreateInput("File MDX", 134, 192, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 $idButton_UnPack = GUICtrlCreateButton("Unpack MDX", 44, 232, 80, 22)
 $idButton_UnpMDX_DBzip = GUICtrlCreateButton("UnpMDX DBzip", 224, 232, 84, 22)
+GUICtrlSetTip(-1, "Unpack MDX/MDD to sqlite3 DB with zip compress")
 $idButton_Meta = GUICtrlCreateButton("Show Meta info", 400, 192, 84, 22)
+GUICtrlSetTip(-1, "Meta information of MDX")
 $idButton_UnpMDX_DB = GUICtrlCreateButton("UnpMDX DB", 133, 232, 80, 22)
+GUICtrlSetTip(-1, "Unpack MDX to sqlite3 DB")
 $idButton_UnpSplit = GUICtrlCreateButton("UnpSplit MDX", 315, 232, 80, 22)
+GUICtrlSetTip(-1, "Unpack MDX/MDD and split into n files.")
 $ComboSplit = GUICtrlCreateCombo("0", 400, 232, 43, 25)
 GUICtrlSetData($ComboSplit, "2|3|4|5|6|7|8|9|10", "0")
 GUICtrlCreateLabel("parts", 448, 236, 34, 20)
@@ -48,7 +59,9 @@ $idButton_BrowseMDD = GUICtrlCreateButton("Select File", 45, 410, 80, 22)
 $idButton_UnMDD = GUICtrlCreateButton("Unpack MDD", 45, 450, 80, 22)
 GUICtrlCreateInput("File MDD or DB", 139, 410, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 $idButton_UnpMDD_DB = GUICtrlCreateButton("UnpMDD DB", 136, 450, 80, 22)
+GUICtrlSetTip(-1, "Unpack MDD to sqlite3 DB")
 $idButton_UnpSqlite3 = GUICtrlCreateButton("Conv Sql3 TXT", 315, 450, 84, 22)
+GUICtrlSetTip(-1, "Convert sqlite3 DB to TXT")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 GUICtrlCreateLabel("Paths and file names must not contain spaces", 96, 488, 282, 20)
@@ -356,9 +369,17 @@ GUISetState(@SW_SHOW)
                 ; Switch from event Button GuiUpdate-------------------------------20
 				Switch $aMsg[0]
 			        Case $idButton_upd
-				If MsgBox(262209,"Check the latest mdictGui releases", "Want to check the GitHub repository"& @CRLF & _
+				If MsgBox(1,"Check the latest mdictGui releases", "Want to check the GitHub repository"& @CRLF & _
 				"for the latest mdictGui releases?") = 1 Then ShellExecute("https://github.com/jekovcar/mdict-utils-Gui/releases")
 				EndSwitch
+
+                ; Switch from event Button mdict Pypi-------------------------------21
+				Switch $aMsg[0]
+			        Case $idButton_pypi
+				If MsgBox(1,"Check the latest mdict-utils", "Want to check Project mdict-utils"& @CRLF & _
+				"on Pypi.Org for the latest releases?") = 1 Then ShellExecute("https://pypi.org/project/mdict-utils/")
+				EndSwitch
+
 	WEnd
 	Run(@ComSpec & " /c taskkill /IM cmd.exe /F","",@SW_HIDE)
 	GUIDelete($hGUI1)
@@ -376,4 +397,3 @@ GUISetState(@SW_SHOW)
 	If $iPIDUnPack_zip Then ProcessClose($iPIDUnPack_zip)
 	If $iPIDUnPackSplit Then ProcessClose($iPIDUnPackSplit)
 	EndFunc   ;==========
-
