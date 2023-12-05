@@ -8,7 +8,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.6.4", 517, 516, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.6.5", 517, 516, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
 GUICtrlSetTip(-1, "Select File Descripton in UTF8")
@@ -315,22 +315,46 @@ GUISetState(@SW_SHOW)
 			     If $sPack = 0 Then
 				   MsgBox(8192, "", "You are not chosen MDX/MDD file")
 				 Else
-				   MsgBox(8192, "","You choose file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpack as: db")
-				   $iPIDUnPack_db = Run("mdict -x "&$Pack&" --exdb", "", @SW_SHOWNORMAL)
+				$Pack_=_WinAPI_PathRemoveExtension($Pack)
+				$Pack_=_WinAPI_PathRemoveExtension($Pack_)
+				if $sExt3 = "mdx" Then
+				   FileCopy($Pack, $Pack_&".mdx.mdx", $FC_OVERWRITE)
+				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdx.mdx --exdb", "", @SW_SHOWNORMAL)
+				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db!"&@CRLF & @CRLF & _
+				   "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as :"& @CRLF &$Pack_&".mdx.db")
+				   FileDelete($Pack_&".mdx.mdx")
+				Else
+					FileCopy($Pack, $Pack_&".mdd.mdd", $FC_OVERWRITE)
+				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdd.mdd --exdb", "", @SW_SHOWNORMAL)
+				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db!"&@CRLF & @CRLF & _
+				   "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as :"& @CRLF &$Pack_&".mdd.db")
+				   FileDelete($Pack_&".mdd.mdd")
+				     EndIf
 			EndIf
 				EndSwitch
 
 				; Switch from event Button_UnPackMDX/MDD to DBzip-----------------------16
 				Switch $aMsg[0]
 					Case $idButton_UnpMDX_DBzip
-			     If $sPack = 0 Then
-				   MsgBox(8192, "", "You are not chosen MDX/MDD file")
+			     If $sPack = 0  Then
+				   MsgBox(4096, "", "You are not chosen MDX/MDD file")
 				 Else
-				   $Pack_=_WinAPI_PathRemoveExtension($Pack)
-				   $Pack_=_WinAPI_PathRemoveExtension($Pack_)
-				   MsgBox(8192,"", "You choosed file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"will unpacked with compress:"& @CRLF &$Pack_&".db")
-				   $iPIDUnPack_zip = Run("mdict -x "&$Pack&" --exdb-zip", "", @SW_SHOWNORMAL)
-				  EndIf
+				$Pack_=_WinAPI_PathRemoveExtension($Pack)
+				$Pack_=_WinAPI_PathRemoveExtension($Pack_)
+				if $sExt3 = "mdx" Then
+				   FileCopy($Pack, $Pack_&".mdx_zip.mdx", $FC_OVERWRITE)
+				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdx_zip.mdx --exdb-zip", "", @SW_SHOWNORMAL)
+				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db zip!"&@CRLF & @CRLF & _
+				   "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as compressed:"& @CRLF &$Pack_&".mdx_zip.db")
+				   FileDelete($Pack_&".mdx_zip.mdx")
+				Else
+					FileCopy($Pack, $Pack_&".mdd_zip.mdd", $FC_OVERWRITE)
+				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdd_zip.mdd --exdb-zip", "", @SW_SHOWNORMAL)
+				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db zip!"&@CRLF & @CRLF & _
+				   "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as compressed:"& @CRLF &$Pack_&".mdd_zip.db")
+				   FileDelete($Pack_&".mdd_zip.mdd")
+				     EndIf
+				 EndIf
 				EndSwitch
 
                 ; Switch from event Select Combo Split Parts----------------------------17
