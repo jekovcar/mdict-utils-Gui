@@ -110,10 +110,9 @@ GUISetState(@SW_SHOW)
                 $file = FileOpen(@TempDir & "\temp.tmp", 0)
                 $line = FileReadLine($file)
 
-		; Check file path for spaces.
-		    If StringInStr($line, " ") > 0 Then
-            MsgBox( 0, "", "There is a space in the 'мdict' path and it may not work properly.")
-                EndIf ;------------------------------
+		    ; Check file path for spaces.
+		    If StringInStr($line, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'мdict' path and it may not work properly.")
+            ;------------------------------
 		    Local $aMsg = 0
 	While 1
 			; Assign to $aMsg the advanced GUI messages.
@@ -142,9 +141,8 @@ GUISetState(@SW_SHOW)
 		        $sDesc=1
 				EndIf
 				; Check file path for spaces.
-		        If StringInStr($Descr, " ") > 0 Then
-				MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
-                      EndIf ;----------------------
+		        If StringInStr($Descr, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
+                ;----------------------
 					EndIf
 				EndSwitch
 
@@ -162,9 +160,8 @@ GUISetState(@SW_SHOW)
                 GUICtrlCreateInput($Unp, 140, 72, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
 		        Local $UnpDir = StringRegExpReplace($Unp, "\\[^\\]+$", "")
 				; Check file path for spaces.
-		        If StringInStr($Unp, " ") > 0 Then
-				MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
-                      EndIf ;----------------------
+		        If StringInStr($Unp, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
+                ;----------------------
 	               EndIf
 				EndSwitch
 
@@ -180,9 +177,8 @@ GUISetState(@SW_SHOW)
 		         GUICtrlCreateInput($Pack, 134, 192, 260, 32, $ES_MULTILINE,$WS_EX_CLIENTEDGE)
 				 $sExt3 = StringRegExpReplace($Pack, "^.*\.", "")
 				; Check file path for spaces.
-		        If StringInStr($Pack, " ") > 0 Then
-				MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
-                     EndIf ;----------------------
+		        If StringInStr($Pack, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
+                ;----------------------
                   EndIf
 				EndSwitch
 
@@ -246,9 +242,8 @@ GUISetState(@SW_SHOW)
 		            $sUnMDD=1
                    GUICtrlCreateInput($UnpMDD, 134, 300, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
 				; Check file path for spaces.
-		        If StringInStr($UnpMDD, " ") > 0 Then
-				MsgBox( 0, "", "There is a space in the 'folder' path and it may not work properly.")
-                    EndIf ;----------------------
+		        If StringInStr($UnpMDD, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'folder' path and it may not work properly.")
+                ;----------------------
 	              EndIf
 			    EndSwitch
 
@@ -264,9 +259,8 @@ GUISetState(@SW_SHOW)
 		          GUICtrlCreateInput($PackMDD, 139, 410, 260, 32, $ES_MULTILINE,$WS_EX_CLIENTEDGE)
 	                          $sExt2 = StringRegExpReplace($PackMDD, "^.*\.", "")
 				; Check file path for spaces.
-		        If StringInStr($PackMDD, " ") > 0 Then
-				MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
-                     EndIf ;----------------------
+		        If StringInStr($PackMDD, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
+				;----------------------
 	               EndIf
 				EndSwitch
 
