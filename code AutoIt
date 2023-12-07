@@ -8,7 +8,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.6.6", 517, 516, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.6.7", 517, 516, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
 GUICtrlSetTip(-1, "Select File Descripton in UTF8")
@@ -198,12 +198,17 @@ GUISetState(@SW_SHOW)
 				   MsgBox(8192, "", "You are not chosen Mdict source")
 			  Else
 				 If $sDesc = 0 Then
-                   MsgBox(8192, "","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF & _
-				   "will be pack without Description as:"&$Un_&".mdx")
+                      If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF & _
+				   "will be pack without Description as:"&$Un_&".mdx") = 1 Then
 				   $iPIDPack = Run("mdict -a "&$Unp&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+				   Else
+				   EndIf
 				 Else
-				   MsgBox(8192, "","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF &"will be pack as:"&$Un_&".mdx")
+				   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF _
+				   & ""&$Unp&""& @CRLF &"will be pack as:"&$Un_&".mdx") = 1 Then
 				   $iPIDPack = Run("mdict --description "&$Descr&" -a "&$Unp&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+				   Else
+				   EndIf
 		        EndIf
 			       EndIf
 				EndSwitch
@@ -214,8 +219,10 @@ GUISetState(@SW_SHOW)
 			     If $sPack = 0 Or $sExt3 = "mdd" Then
 				   MsgBox(8192, "", "You are not chosen MDX file")
 				 Else
-				   MsgBox(8192, "","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpack in dir: MDX")
-				   $iPIDUnPack = Run("mdict -x "&$Pack&" -d ./mdx", "", @SW_SHOWNORMAL)
+				If MsgBox(1, "Your choice","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpack in dir: MDX")= 1 Then
+                   $iPIDUnPack = Run("mdict -x "&$Pack&" -d ./mdx", "", @SW_SHOWNORMAL)
+				   Else
+				EndIf
 			EndIf
 				EndSwitch
 
@@ -280,11 +287,16 @@ GUISetState(@SW_SHOW)
 				   MsgBox(8192, "", "You are not chosen MDD source")
 			    Else
 				  If $sDesc = 0 Then
-                   MsgBox(8192, "","You choose MDD source:"& @CRLF & ""&$UnpMDD&""& @CRLF &"will be pack without Description as:"& @CRLF &$UnpMDD&".mdd")
+                   If MsgBox(1, "Your choice","You choose MDD source:"& @CRLF & ""&$UnpMDD&""& @CRLF _
+					&"will be pack without Description as:"& @CRLF &$UnpMDD&".mdd") =1 Then
 				   $iPIDPackMDD = Run("mdict -a "&$UnpMDD&" "&$UnpMDD&".mdd", "", @SW_SHOWNORMAL)
+				   Else
+				   EndIf
 				 Else
-				   MsgBox(8192, "","You choose Mdict source:"& @CRLF & ""&$UnpMDD&""& @CRLF &"will be pack as:"&$UnpMDD&".mdd")
+				   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&$UnpMDD&""& @CRLF &"will be pack as:"&$UnpMDD&".mdd")=1 Then
 				   $iPIDPackMDD = Run("mdict --description "&$Descr&" -a "&$UnpMDD&" "&$UnpMDD&".mdd", "", @SW_SHOWNORMAL)
+				   Else
+				   EndIf
 		        EndIf
 			       EndIf
 			EndSwitch
@@ -295,8 +307,10 @@ GUISetState(@SW_SHOW)
 			     If $sPackMDD = 0 Or $sExt2 = "db"  Then
 				   MsgBox(8192, "", "You are not chosen MDD file")
 				 Else
-				   MsgBox(8192, "","You choose MDD file:"& @CRLF & ""&$PackMDD&""& @CRLF &"will be unpack in dir: MDD")
+				   if MsgBox(1, "Your choice","You choose MDD file:"& @CRLF & ""&$PackMDD&""& @CRLF &"will be unpack in dir: MDD")=1 Then
 				   $iPIDUnMDD = Run("mdict -x "&$PackMDD&" -d ./mdd", "", @SW_SHOWNORMAL)
+				   Else
+				   EndIf
 			     EndIf
 				EndSwitch
 
@@ -306,8 +320,11 @@ GUISetState(@SW_SHOW)
 			     If $sPackMDD = 0 Or $sExt2 = "mdd"  Then
 				   MsgBox(8192, "", "You are not chosen db file")
 				 Else
-				   MsgBox(8192, "","You choose Sqlite3 db file:"& @CRLF & ""&$PackMDD&""& @CRLF &"will be unpack as:"&$PackMDD&".txt")
+				   If MsgBox(1, "Your choice","You choose Sqlite3 db file:"& @CRLF _
+					& ""&$PackMDD&""& @CRLF &"will be unpack as:"&$PackMDD&".txt")=1 Then
 				   $iPIDUn_db = Run("mdict --db-txt "&$PackMDD&"", "", @SW_SHOWNORMAL)
+				   Else
+				   EndIf
 			     EndIf
 				EndSwitch
 
@@ -317,9 +334,11 @@ GUISetState(@SW_SHOW)
 				 If $sUnp = 0 Then
 				   MsgBox(8192, "", "You are not chosen Mdict source")
 				 Else
-                   MsgBox(8192, "","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF &"will be convert as:"&$Unp&".db")
+                   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF &"will be convert as:"&$Unp&".db")=1 Then
 				   $iPIDconv_db = Run("mdict --txt-db "&$Unp&"", "", @SW_SHOWNORMAL)
-			       EndIf
+				   Else
+				   EndIf
+				  EndIf
 				EndSwitch
 
 				; Switch from event Button_Pack All TXT----------------------------14
@@ -329,13 +348,17 @@ GUISetState(@SW_SHOW)
 				   MsgBox(8192, "", "You are not chosen at last one Mdict source")
 			  Else
 				 If $sDesc = 0 Then
-                 MsgBox(8192, "","In selected Mdict Folder :"& @CRLF & _
-				 ""&$UnpDir&""& @CRLF & "all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\All.mdx")
+                   If MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
+				   & "all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\All.mdx")=1 Then
 			$iPIDPack_all = Run("mdict -a "&$UnpDir&" "&$UnpDir&"\All.mdx", "", @SW_SHOWNORMAL)
-				 Else
-		        MsgBox(8192, "","In selected Mdict Folder :"& @CRLF & _
-				""&$UnpDir&""& @CRLF &"all TXT will be pack as :"& @CRLF&$UnpDir&"\All_descr.mdx")
+				   Else
+			       EndIf
+				Else
+		           if MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
+				   &"all TXT will be pack as :"& @CRLF&$UnpDir&"\All_descr.mdx")=1 Then
 			$iPIDPack_all = Run("mdict --description "&$Descr&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
+				   Else
+			       EndIf
 		        EndIf
 			       EndIf
 				EndSwitch
@@ -349,17 +372,22 @@ GUISetState(@SW_SHOW)
 				$Pack_=_WinAPI_PathRemoveExtension($Pack)
 				$Pack_=_WinAPI_PathRemoveExtension($Pack_)
 				if $sExt3 = "mdx" Then
+					if MsgBox(1, "Your choice","You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as :"& @CRLF &$Pack_&".mdx.db")=1 Then
 				   FileCopy($Pack, $Pack_&".mdx.mdx", $FC_OVERWRITE)
 				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdx.mdx --exdb", "", @SW_SHOWNORMAL)
-				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db!"&@CRLF & @CRLF & _
-				   "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as :"& @CRLF &$Pack_&".mdx.db")
+				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db!")
 				   FileDelete($Pack_&".mdx.mdx")
-				Else
+					Else
+				   EndIf
+					Else
+				        if MsgBox(1,"Your choice","You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF _
+					    & @CRLF &"is packing as :"& @CRLF &$Pack_&".mdd.db")=1 Then
 					FileCopy($Pack, $Pack_&".mdd.mdd", $FC_OVERWRITE)
 				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdd.mdd --exdb", "", @SW_SHOWNORMAL)
-				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db!"&@CRLF & @CRLF & _
-				   "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as :"& @CRLF &$Pack_&".mdd.db")
+				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDD unpacks into a db!")
 				   FileDelete($Pack_&".mdd.mdd")
+						Else
+				        EndIf
 				     EndIf
 			       EndIf
 				EndSwitch
@@ -373,17 +401,23 @@ GUISetState(@SW_SHOW)
 				$Pack_=_WinAPI_PathRemoveExtension($Pack)
 				$Pack_=_WinAPI_PathRemoveExtension($Pack_)
 				if $sExt3 = "mdx" Then
+					  if MsgBox(1,"Your choice", "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF _
+					  & @CRLF &"is packing as compressed:"& @CRLF &$Pack_&".mdx_zip.db") =1 Then
 				   FileCopy($Pack, $Pack_&".mdx_zip.mdx", $FC_OVERWRITE)
 				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdx_zip.mdx --exdb-zip", "", @SW_SHOWNORMAL)
-				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db zip!"&@CRLF & @CRLF & _
-				   "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as compressed:"& @CRLF &$Pack_&".mdx_zip.db")
+				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db zip!")
 				   FileDelete($Pack_&".mdx_zip.mdx")
-				Else
+					  Else
+				      EndIf
+					  Else
+					    if MsgBox(1,"Your choice","You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF _
+						& @CRLF &"is packing as compressed:"& @CRLF &$Pack_&".mdd_zip.db") =1 Then
 					FileCopy($Pack, $Pack_&".mdd_zip.mdd", $FC_OVERWRITE)
 				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdd_zip.mdd --exdb-zip", "", @SW_SHOWNORMAL)
-				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db zip!"&@CRLF & @CRLF & _
-				   "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as compressed:"& @CRLF &$Pack_&".mdd_zip.db")
+				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDD unpacks into a db zip!")
 				   FileDelete($Pack_&".mdd_zip.mdd")
+						Else
+				        EndIf
 				     EndIf
 				 EndIf
 				EndSwitch
@@ -404,11 +438,17 @@ GUISetState(@SW_SHOW)
 					 MsgBox(8192, "", "You are not chosen Splits: " & $sComboRead)
 				 Else
 				    if $sExt3="mdx"     Then
-				   MsgBox(8192, "","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpacked into "&$sComboRead&" parts in dir : "&$sExt3)
+				        if MsgBox(1,"Your choice","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF _
+						&"will be unpacked into "&$sComboRead&" parts in dir : "&$sExt3)=1 Then
 				   $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdx --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
+						Else
+				        EndIf
 				 ElseIf $sExt3="mdd"    Then
-				   MsgBox(8192, "","You choose MDD file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpacked into "&$sComboRead&" parts in dir : "&$sExt3)
+				        if MsgBox(1,"Your choice","You choose MDD file:"& @CRLF & ""&$Pack&""& @CRLF _
+						&"will be unpacked into "&$sComboRead&" parts in dir : "&$sExt3)=1 Then
 				   $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdd --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
+						Else
+				        EndIf
 				    EndIf
 			    EndIf
 			EndIf
