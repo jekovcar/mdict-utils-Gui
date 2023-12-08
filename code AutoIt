@@ -40,9 +40,10 @@ GUICtrlSetTip(-1, "Meta information of MDX/MDD")
 $idButton_UnpMDX_DB = GUICtrlCreateButton("UnpFile DB", 133, 232, 80, 22)
 GUICtrlSetTip(-1, "Unpack MDX/MDD to sqlite3 DB")
 $idButton_UnpSplit = GUICtrlCreateButton("UnpFile Split", 315, 232, 80, 22)
-GUICtrlSetTip(-1, "Unpack MDX/MDD into 'n/az' parts.")
+GUICtrlSetTip(-1, "Unpack MDX/MDD into 'az/n' parts.")
 $ComboSplit = GUICtrlCreateCombo("0", 400, 232, 43, 25)
 GUICtrlSetData($ComboSplit, "az|2|3|4|5|6|7|8|9|10", "0")
+GUICtrlSetTip(-1, "Select az(a...z), 2-10 parts")
 GUICtrlCreateLabel("parts", 448, 236, 34, 20)
 GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -400,13 +401,13 @@ GUISetState(@SW_SHOW)
 				    EndIf
 				EndSwitch
 
-                ; Switch from event Select Combo Split Parts----------------------------17
+                        ; Switch from event Select Combo Split Parts----------------------------17
 				Switch $aMsg[0]
 			        Case $ComboSplit
 				$sComboRead = GUICtrlRead($ComboSplit)
 				EndSwitch
 
-				; Switch from event Button_UnPack MDX/MDD to Splits---------------------18
+		         ; Switch from event Button_UnPack MDX/MDD to Splits---------------------18
 				Switch $aMsg[0]
 					Case $idButton_UnpSplit
 			        If $sPack = 0  Then
@@ -439,14 +440,14 @@ GUISetState(@SW_SHOW)
 			       EndIf
 				EndSwitch
 
-                ; Switch from event Button GuiUpdate---------------------------------19
+                       ; Switch from event Button GuiUpdate---------------------------------19
 				Switch $aMsg[0]
 			        Case $idButton_upd
 				If MsgBox(1,"Check the latest mdictGui releases", "Want to check the GitHub repository"& @CRLF & _
 				"for the latest mdictGui releases?") = 1 Then ShellExecute("https://github.com/jekovcar/mdict-utils-Gui/releases")
 				EndSwitch
 
-                ; Switch from event Button mdict Pypi-------------------------------20
+                       ; Switch from event Button mdict Pypi-------------------------------20
 				Switch $aMsg[0]
 			        Case $idButton_pypi
 				If MsgBox(1,"Check the latest mdict-utils", "Want to check Project mdict-utils"& @CRLF & _
