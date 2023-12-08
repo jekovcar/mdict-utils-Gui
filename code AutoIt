@@ -8,7 +8,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.6.7", 517, 516, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.6.8", 529, 631, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
 GUICtrlSetTip(-1, "Select File Descripton in UTF8")
@@ -62,7 +62,14 @@ $idButton_UnpSqlite3 = GUICtrlCreateButton("Conv Sql3 TXT", 315, 450, 84, 22)
 GUICtrlSetTip(-1, "Convert sqlite3 DB to TXT")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-GUICtrlCreateLabel("Paths and file names must not contain spaces", 96, 488, 282, 20)
+$GroupQuery = GUICtrlCreateGroup("Search in MDX dict", 30, 498, 393, 89)
+$idButton_key = GUICtrlCreateButton("Query key", 45, 524, 80, 22)
+$inp_word = GUICtrlCreateInput("", 139, 524, 260, 21)
+GUICtrlSetTip(-1, "Only used to test whether dictionary packaging is correct." & @CRLF & "只用于测试词典打包是否正确。")
+GUICtrlCreateLabel("Enter <WORD> to request the key. Empty for all key list", 139, 550, 282, 20)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+GUICtrlCreateLabel("Paths and file names must not contain spaces", 96, 595, 282, 20)
 GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
 GUICtrlSetColor(-1, 0x0000FF)
 
@@ -79,6 +86,7 @@ GUISetState(@SW_SHOW)
 		Local $iPIDUnPack_db = 0
 		Local $iPIDUnPack_zip = 0
 		Local $iPIDUnPackSplit = 0
+		Local $iPIDquery = 0
 		Local  $sDesc=0
 		Local  $sUnp=0
 		Local  $sPack=0
@@ -220,7 +228,6 @@ GUISetState(@SW_SHOW)
 			     If $sPack = 0 Then
 				   MsgBox(8192, "", "You are not chosen MDX/MDD file")
 				 Else
-				   Run("cmd /c",@SW_SHOW)
 				   $iPIDMeta = Run(@ComSpec & " /k "&$line&"\mdict.exe -m "&$Pack&"", "", @SW_SHOWNORMAL)
 			       EndIf
 				EndSwitch
@@ -439,6 +446,25 @@ GUISetState(@SW_SHOW)
 				"on Pypi.Org for the latest releases?") = 1 Then ShellExecute("https://pypi.org/project/mdict-utils/")
 				EndSwitch
 
+				; Switch from event button Query key--------------------------------21
+				Switch $aMsg[0]
+					Case $idButton_key
+						$inp=GUICtrlRead($inp_word)
+						If $sPack = 0 Or $sExt3 = "mdd" Then
+				   MsgBox(8192, "", "You are not chosen MDX file")
+						Else
+			    If $inp = "" Then
+				       If MsgBox(1,"Your choice", "Typed word is EMPTY."& @CRLF & @CRLF &  "Mdict will All key list ?") = 1 Then
+					$iPIDquery = Run(@ComSpec & " /k "&$line&"\mdict.exe -k "&$Pack&"", "", @SW_SHOWNORMAL)
+					   EndIf
+				    Else
+					If MsgBox(1,"Your choice", "Query word <"&$inp&"> in :"& @CRLF & @CRLF &$Pack&" ?") = 1 Then
+					$iPIDquery = Run(@ComSpec & " /k "&$line&"\mdict.exe -q "&$inp&" "&$Pack&"", "", @SW_SHOWNORMAL)
+					  EndIf
+					EndIf
+				 EndIf
+				EndSwitch
+
 	WEnd
 	Run(@ComSpec & " /c taskkill /IM cmd.exe /F","",@SW_HIDE)
 	GUIDelete($hGUI1)
@@ -454,4 +480,5 @@ GUISetState(@SW_SHOW)
 	If $iPIDUnPack_db Then ProcessClose($iPIDUnPack_db)
 	If $iPIDUnPack_zip Then ProcessClose($iPIDUnPack_zip)
 	If $iPIDUnPackSplit Then ProcessClose($iPIDUnPackSplit)
+	If $iPIDquery Then ProcessClose($iPIDquery)
 	EndFunc   ;==========
