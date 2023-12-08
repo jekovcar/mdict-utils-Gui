@@ -8,17 +8,16 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.6.8", 529, 631, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.6.9", 529, 631, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
-GUICtrlSetTip(-1, "Select File Descripton in UTF8")
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 440, 16, 60, 24)
 GUICtrlSetTip(-1, "GitHub mdictGui")
 $idButton_vers = GUICtrlCreateButton("MdictVers", 440, 90, 60, 24)
 GUICtrlSetTip(-1, "Display Mdict-utils version")
 $idButton_pypi = GUICtrlCreateButton("MdictUpd", 440, 50, 60, 24)
 GUICtrlSetTip(-1, "pypi.org/project/mdict-utils/")
-GUICtrlCreateInput("File Descripton(UTF8)", 140, 14, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+GUICtrlCreateInput("File Descripton", 140, 14, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
 
 $GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 56, 393, 88)
 $idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 45, 72, 80, 22)
@@ -41,9 +40,9 @@ GUICtrlSetTip(-1, "Meta information of MDX/MDD")
 $idButton_UnpMDX_DB = GUICtrlCreateButton("UnpFile DB", 133, 232, 80, 22)
 GUICtrlSetTip(-1, "Unpack MDX/MDD to sqlite3 DB")
 $idButton_UnpSplit = GUICtrlCreateButton("UnpFile Split", 315, 232, 80, 22)
-GUICtrlSetTip(-1, "Unpack MDX/MDD and split into n files.")
+GUICtrlSetTip(-1, "Unpack MDX/MDD into 'n/az' parts.")
 $ComboSplit = GUICtrlCreateCombo("0", 400, 232, 43, 25)
-GUICtrlSetData($ComboSplit, "2|3|4|5|6|7|8|9|10", "0")
+GUICtrlSetData($ComboSplit, "az|2|3|4|5|6|7|8|9|10", "0")
 GUICtrlCreateLabel("parts", 448, 236, 34, 20)
 GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -69,7 +68,7 @@ GUICtrlSetTip(-1, "Only used to test whether dictionary packaging is correct." &
 GUICtrlCreateLabel("Enter <WORD> to request the key. Empty for all key list", 139, 550, 282, 20)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-GUICtrlCreateLabel("Paths and file names must not contain spaces", 96, 595, 282, 20)
+GUICtrlCreateLabel("All files must be UTF-8 encoding, include HTML and TXT", 65, 595, 350, 20)
 GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
 GUICtrlSetColor(-1, 0x0000FF)
 
@@ -92,7 +91,6 @@ GUISetState(@SW_SHOW)
 		Local  $sPack=0
 		Local  $sUnMDD=0
 		Local  $sPackMDD=0
-		Local  $sComboRead=0
 		Local  $Pack = ""
 		Local  $Pack_ = ""
 		Local  $sExt2 = ""
@@ -413,20 +411,29 @@ GUISetState(@SW_SHOW)
 					Case $idButton_UnpSplit
 			        If $sPack = 0  Then
 				   MsgBox(8192, "", "You are not chosen MDX/MDD file")
-				 Else
-				 If  $sComboRead = 0 Then
+					Else
+				   $sComboRead = GUICtrlRead($ComboSplit)
+				 If  $sComboRead = "0" Then
 					 MsgBox(8192, "", "You are not chosen Splits: " & $sComboRead)
 				 Else
 				    if $sExt3="mdx"     Then
 				        if MsgBox(1,"Your choice","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF _
 						&"will be unpacked into "&$sComboRead&" parts in dir : "&$sExt3)=1 Then
-				   $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdx --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
+						If $sComboRead = "az" Then
+				    $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdx --split-"&$sComboRead&"", "", @SW_SHOWNORMAL)
+                        Else
+				    $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdx --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
+					EndIf
 				        EndIf
 				 ElseIf $sExt3="mdd"    Then
 				        if MsgBox(1,"Your choice","You choose MDD file:"& @CRLF & ""&$Pack&""& @CRLF _
 						&"will be unpacked into "&$sComboRead&" parts in dir : "&$sExt3)=1 Then
+						If $sComboRead = "az" Then
+				   $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdd --split-"&$sComboRead&"", "", @SW_SHOWNORMAL)
+				        Else
 				   $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdd --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
-				         EndIf
+				   EndIf
+						EndIf
 				       EndIf
 					 EndIf
 			       EndIf
