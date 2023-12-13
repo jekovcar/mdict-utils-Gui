@@ -8,7 +8,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.6.9", 529, 631, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.7", 529, 631, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 440, 16, 60, 24)
@@ -17,11 +17,11 @@ $idButton_vers = GUICtrlCreateButton("MdictVers", 440, 90, 60, 24)
 GUICtrlSetTip(-1, "Display Mdict-utils version")
 $idButton_pypi = GUICtrlCreateButton("MdictUpd", 440, 50, 60, 24)
 GUICtrlSetTip(-1, "pypi.org/project/mdict-utils/")
-GUICtrlCreateInput("File Descripton", 140, 14, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+$Descr = GUICtrlCreateEdit("File Descripton", 140, 14, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 
 $GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 56, 393, 88)
 $idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 45, 72, 80, 22)
-GUICtrlCreateInput("Source Mdict", 140, 72, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+$Unp = GUICtrlCreateEdit("Source Mdict", 140, 72, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 $idButton_Pack = GUICtrlCreateButton("Make MDX", 45, 110, 80, 22)
 $idButton_PackDir = GUICtrlCreateButton("Pack All TXT", 140, 110, 80, 22)
 GUICtrlSetTip(-1, "Pack MDX with many TXT files")
@@ -31,7 +31,7 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupUnPackMDX = GUICtrlCreateGroup("UnPack MDX", 25, 166, 473, 100)
 $idButton_BrowsePack = GUICtrlCreateButton("File MDX/MDD", 45, 192, 84, 22)
-GUICtrlCreateInput("File MDX or MDD", 134, 192, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+$Pack = GUICtrlCreateEdit("File MDX or MDD", 134, 192, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 $idButton_UnPack = GUICtrlCreateButton("Unpack MDX", 44, 232, 80, 22)
 $idButton_UnpMDX_DBzip = GUICtrlCreateButton("UnpFile DBzip", 224, 232, 84, 22)
 GUICtrlSetTip(-1, "Unpack MDX/MDD to sqlite3 DB with zip compress")
@@ -50,14 +50,14 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupPackMDD = GUICtrlCreateGroup("Pack MDD", 29, 282, 393, 80)
 $idButton_BrowseDir = GUICtrlCreateButton("Folder MDD", 45, 300, 80, 22)
-GUICtrlCreateInput("Dir MDD", 134, 300, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+$UnpMDD = GUICtrlCreateEdit("Dir MDD", 134, 300, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 $idButton_PackMDD = GUICtrlCreateButton("Make MDD", 45, 329, 80, 22)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupUnPackMDD = GUICtrlCreateGroup("UnPack MDD / Convert Sqlite3DB to TXT", 30, 384, 393, 97)
 $idButton_BrowseMDD = GUICtrlCreateButton("Select File", 45, 410, 80, 22)
 $idButton_UnMDD = GUICtrlCreateButton("Unpack MDD", 45, 450, 80, 22)
-GUICtrlCreateInput("File MDD or DB", 139, 410, 260, 32, BitOR($GUI_SS_DEFAULT_INPUT,$ES_MULTILINE))
+$PackMDD = GUICtrlCreateEdit("File MDD or DB", 139, 410, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 $idButton_UnpSqlite3 = GUICtrlCreateButton("Conv Sql3 TXT", 315, 450, 84, 22)
 GUICtrlSetTip(-1, "Convert sqlite3 DB to TXT")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -92,7 +92,6 @@ GUISetState(@SW_SHOW)
 		Local  $sPack=0
 		Local  $sUnMDD=0
 		Local  $sPackMDD=0
-		Local  $Pack = ""
 		Local  $Pack_ = ""
 		Local  $sExt2 = ""
 		Local  $sExt3 = ""
@@ -102,233 +101,228 @@ GUISetState(@SW_SHOW)
 
 		; Display a message of whether the file exists or Exit.
 	        Local $iFileExists = FileExists("mdict.exe")
-	   If $iFileExists Then
-            Else
-       If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF & _
+	    If $iFileExists Then
+               Else
+            If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF & _
            "Pls visit, " & "github/liuyug/mdict-utils" & @CRLF & _
            "to download last 'mdict-windows'."& @CRLF & "Put mdictGui to 'mdict-windows'." & @CRLF) _
 		   = 1 Then ShellExecute("https://github.com/liuyug/mdict-utils/releases")
                Exit
-		    EndIf
+		        EndIf
 
-		; Initialize a Local RUN script.
+		    ; Initialize a Local RUN script.
 	        Local $aMsg = 0
 				RunWait(@ComSpec & " /c %SystemDrive%&&cd %temp%&&echo %cd%>temp.tmp", "", @SW_hide); create temp file to save %cd%
                 $file = FileOpen(@TempDir & "\temp.tmp", 0)
                 $line = FileReadLine($file)
 
-		    ; Check file path for spaces.
-		    If StringInStr($line, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'мdict' path and it may not work properly.")
-            ;------------------------------
-		    Local $aMsg = 0
-	While 1
-			; Assign to $aMsg the advanced GUI messages.
-		        $aMsg = GUIGetMsg($GUI_EVENT_ARRAY)
-				Switch $aMsg[0]
-					Case $GUI_EVENT_CLOSE
-						ExitLoop
-					EndSwitch
+		        ; Check file path for spaces.
+		        If StringInStr($line, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'мdict' path and it may not work properly.")
+                ;------------------------------
+		    Local $msg = 0
+    While $msg <> $GUI_EVENT_CLOSE
+            $msg = GUIGetMsg()
 
-				; Switch from event Open Descr----------------------------1
-				Switch $aMsg[0]
-					Case $idButton_Descr
+		; Select Open Descr----------------------------1
+			Select
+				Case $msg = $idButton_Descr
                     $sMessageDescr = "Please select a description file."
-					$Descr = FileOpenDialog($sMessageDescr, @desktopdir & "\", "Description File (*.*)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+					$Descr1 = FileOpenDialog($sMessageDescr, @desktopdir & "\", "Description File (*.*)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
                If @error Then
 			Else
-                   $Descr = StringReplace($Descr, "|", @CRLF)
-                GUICtrlCreateInput($Descr, 140, 14, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
-		       ; Check file is encoding of UTF
-		          Local $iEncoding = FileGetEncoding($Descr) ; Retrieve the file encoding of the current script.
+                   $Descr1 = StringReplace($Descr1, "|", @CRLF)
+		; Check file is encoding of UTF
+		          Local $iEncoding = FileGetEncoding($Descr1) ; Retrieve the file encoding of the current script.
 			If @error Then
 					MsgBox(8192, "", "Error: Could not obtain the file encoding.")
 			ElseIf Not($iEncoding =256) + ($iEncoding =128) Then
-		            MsgBox(8192, "", "You selected file Description:" & @CRLF & $Descr& @CRLF & @CRLF &"    Description is not UTF 8 !")
+		            MsgBox(8192, "", "You selected file Description:" & @CRLF & $Descr1& @CRLF & @CRLF &"    Description is not UTF 8 !")
 				Else
 		        $sDesc=1
+				GUICtrlSetData($Descr, $Descr1)
 				EndIf
-				; Check file path for spaces.
-		        If StringInStr($Descr, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
-                ;----------------------
+					; Check file path for spaces.
+		            If StringInStr($Descr1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
+					;----------------------
 					EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Open Mdict source MTXT-----------------2
-				Switch $aMsg[0]
-					Case $idButton_BrowseUnp
+		; Select Open Mdict source MTXT-----------------2
+            Select
+                Case $msg = $idButton_BrowseUnp
                  $sMessageUnp = "Please select your Mdict source file."
-                $Unp = FileOpenDialog($sMessageUnp, @desktopdir & "\", "Mdict source (*.txt;*.mtxt)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+                $Unp1 = FileOpenDialog($sMessageUnp, @desktopdir & "\", "Mdict source (*.txt;*.mtxt)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
                 If @error Then
                 Else
-                $Unp = StringReplace($Unp, "|", @CRLF)
-	            $Un_=_WinAPI_PathRemoveExtension($Unp)
+                $Unp1 = StringReplace($Unp1, "|", @CRLF)
+	            $Un_=_WinAPI_PathRemoveExtension($Unp1)
 	            $Un_=_WinAPI_PathRemoveExtension($Un_)
 		        $sUnp=1
-                GUICtrlCreateInput($Unp, 140, 72, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
-		        Local $UnpDir = StringRegExpReplace($Unp, "\\[^\\]+$", "")
-				; Check file path for spaces.
-		        If StringInStr($Unp, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
-                ;----------------------
+				GUICtrlSetData($Unp, $Unp1 )
+		        Local $UnpDir = StringRegExpReplace($Unp1, "\\[^\\]+$", "")
+				   ; Check file path for spaces.
+		           If StringInStr($Unp1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
+                   ;----------------------
 	               EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Open MDX/MDD-------------------------------3
-			    Switch $aMsg[0]
-					Case $idButton_BrowsePack
+		; Select Open MDX/MDD-------------------------------3
+			Select
+                Case $msg = $idButton_BrowsePack
 		        $sMessagePack = "Please select an MDX/MDD file."
-                $Pack = FileOpenDialog($sMessagePack, @desktopdir & "\", "Mdict file (*.mdx;*.mdd)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+                $Pack1 = FileOpenDialog($sMessagePack, @desktopdir & "\", "Mdict file (*.mdx;*.mdd)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
 	            If @error Then
 	             Else
-                 $Pack = StringReplace($Pack, "|", @CRLF)
+                 $Pack1 = StringReplace($Pack1, "|", @CRLF)
 		         $sPack=1
-		         GUICtrlCreateInput($Pack, 134, 192, 260, 32, $ES_MULTILINE,$WS_EX_CLIENTEDGE)
-				 $sExt3 = StringRegExpReplace($Pack, "^.*\.", "")
-				; Check file path for spaces.
-		        If StringInStr($Pack, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
-                ;----------------------
+		            GUICtrlSetData($Pack, $Pack1 )
+				 $sExt3 = StringRegExpReplace($Pack1, "^.*\.", "")
+				    ; Check file path for spaces.
+		            If StringInStr($Pack1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
+                    ;----------------------
                   EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Button_Pack MDX------------------------4
-				Switch $aMsg[0]
-				    Case $idButton_Pack
+		; Select Button_Pack MDX----------------------------4
+            Select
+                Case $msg = $idButton_Pack
 				   If $sUnp = 0 Then
 				   MsgBox(8192, "", "You are not chosen Mdict source")
 			    Else
 				  If $sDesc = 0 Then
-                      If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF & _
+                      If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($Unp)&""& @CRLF & _
 				   "will be pack without Description as:"&$Un_&".mdx") = 1 Then
-				   $iPIDPack = Run("mdict -a "&$Unp&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+				   $iPIDPack = Run("mdict -a "&GUICtrlRead($Unp)&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
 				   EndIf
 				Else
 				   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF _
-				   & ""&$Unp&""& @CRLF &"will be pack as:"&$Un_&".mdx") = 1 Then
-				   $iPIDPack = Run("mdict --description "&$Descr&" -a "&$Unp&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+				   & ""&GUICtrlRead($Unp)&""& @CRLF &"will be pack as:"&$Un_&".mdx") = 1 Then
+				   $iPIDPack = Run("mdict --description "&GUICtrlRead($Descr)&" -a "&GUICtrlRead($Unp)&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
 				           EndIf
 		               EndIf
 			       EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Button_UnPack MDX ----------------------5
-				Switch $aMsg[0]
-					Case $idButton_UnPack
+		; Select Button_UnPack MDX --------------------------5
+			Select
+				Case $msg = $idButton_UnPack
 			     If $sPack = 0 Or $sExt3 = "mdd" Then
 				   MsgBox(8192, "", "You are not chosen MDX file")
 				 Else
-				If MsgBox(1, "Your choice","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF &"will be unpack in dir: MDX")= 1 Then
-                   $iPIDUnPack = Run("mdict -x "&$Pack&" -d ./mdx", "", @SW_SHOWNORMAL)
+				If MsgBox(1, "Your choice","You choose MDX file:"& @CRLF & ""&GUICtrlRead($Pack)&""& @CRLF &"will be unpack in dir: MDX")= 1 Then
+                   $iPIDUnPack = Run("mdict -x "&GUICtrlRead($Pack)&" -d ./mdx", "", @SW_SHOWNORMAL)
 				      EndIf
 			       EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Button_Metainfo------------------------6
-				Switch $aMsg[0]
-					Case $idButton_Meta
+		; Select Button_Metainfo-----------------------------6
+            Select
+                Case $msg = $idButton_Meta
 			     If $sPack = 0 Then
 				   MsgBox(8192, "", "You are not chosen MDX/MDD file")
 				 Else
-				   $iPIDMeta = Run(@ComSpec & " /k "&$line&"\mdict.exe -m "&$Pack&"", "", @SW_SHOWNORMAL)
+				   $iPIDMeta = Run(@ComSpec & " /k "&$line&"\mdict.exe -m "& GUICtrlRead($Pack)&"", "", @SW_SHOWNORMAL)
 			       EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Button_Mdict_version-------------------7
-				Switch $aMsg[0]
-					Case $idButton_vers
+		; Select Button_Mdict_version------------------------7
+           Select
+                Case $msg = $idButton_vers
                    Run("cmd /c",@SW_SHOW)
 				   $iPIDvers = Run(@ComSpec & " /k "&$line&"\mdict.exe --version", "", @SW_SHOWNORMAL)
-				EndSwitch
+			EndSelect
 
-				; Switch from event SelectDir MDD---------------------------8
-				Switch $aMsg[0]
-					Case $idButton_BrowseDir
+		; Select  Folder MDD----------------------------------8
+			Select
+                Case $msg = $idButton_BrowseDir
 						$sMessageUnpMDD = "Please select your Mdd folder."
-                   $UnpMDD = FileSelectFolder($sMessageUnpMDD, "")
+                   $UnpMDD1 = FileSelectFolder($sMessageUnpMDD, "")
                   If @error Then
                      Else
 		            $sUnMDD=1
-                   GUICtrlCreateInput($UnpMDD, 134, 300, 260, 32 ,$ES_MULTILINE,$WS_EX_CLIENTEDGE)
-				; Check file path for spaces.
-		        If StringInStr($UnpMDD, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'folder' path and it may not work properly.")
-                ;----------------------
+                    GUICtrlSetData($UnpMDD, $UnpMDD1 )
+				    ; Check file path for spaces.
+					If StringInStr($UnpMDD1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'folder' path and it may not work properly.")
+                    ;----------------------
 	              EndIf
-			    EndSwitch
+			EndSelect
 
-				; Switch from event Open MDD file------------------------------9
-			    Switch $aMsg[0]
-					Case $idButton_BrowseMDD
+		; Select Open MDD file----------------------------------9
+            Select
+                Case $msg = $idButton_BrowseMDD
 		            $sMessagePackMDD = "Please select an MDD/DB file."
-                $PackMDD = FileOpenDialog($sMessagePackMDD, @desktopdir & "\", "Open file (*.mdd;*.db)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+                $PackMDD1 = FileOpenDialog($sMessagePackMDD, @desktopdir & "\", "Open file (*.mdd;*.db)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
 	               If @error Then
 				Else
-                   $PackMDD = StringReplace($PackMDD, "|", @CRLF)
+                   $PackMDD1 = StringReplace($PackMDD1, "|", @CRLF)
 		           $sPackMDD=1
-		          GUICtrlCreateInput($PackMDD, 139, 410, 260, 32, $ES_MULTILINE,$WS_EX_CLIENTEDGE)
-	                          $sExt2 = StringRegExpReplace($PackMDD, "^.*\.", "")
+		                      GUICtrlSetData($PackMDD, $PackMDD1 )
+	                          $sExt2 = StringRegExpReplace($PackMDD1, "^.*\.", "")
 				; Check file path for spaces.
-		        If StringInStr($PackMDD, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
+		        If StringInStr($PackMDD1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
 				;----------------------
 	               EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Button_Pack MDD-------------------------------10
-				Switch $aMsg[0]
-				    Case $idButton_PackMDD
+		; Select Button_Pack MDD--------------------------------10
+			Select
+                Case $msg = $idButton_PackMDD
 				 If $sUnMDD = 0 Then
 				   MsgBox(8192, "", "You are not chosen MDD source")
 			    Else
 				  If $sDesc = 0 Then
-                   If MsgBox(1, "Your choice","You choose MDD source:"& @CRLF & ""&$UnpMDD&""& @CRLF _
-					&"will be pack without Description as:"& @CRLF &$UnpMDD&".mdd") =1 Then
-				   $iPIDPackMDD = Run("mdict -a "&$UnpMDD&" "&$UnpMDD&".mdd", "", @SW_SHOWNORMAL)
+                   If MsgBox(1, "Your choice","You choose MDD source:"& @CRLF & ""&GUICtrlRead($UnpMDD)&""& @CRLF _
+					&"will be pack without Description as:"& @CRLF &GUICtrlRead($UnpMDD)&".mdd") =1 Then
+				   $iPIDPackMDD = Run("mdict -a "&GUICtrlRead($UnpMDD)&" "&GUICtrlRead($UnpMDD)&".mdd", "", @SW_SHOWNORMAL)
 				   EndIf
 				 Else
-				   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&$UnpMDD&""& @CRLF &"will be pack as:"&$UnpMDD&".mdd")=1 Then
-				   $iPIDPackMDD = Run("mdict --description "&$Descr&" -a "&$UnpMDD&" "&$UnpMDD&".mdd", "", @SW_SHOWNORMAL)
+				   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($UnpMDD)&""& @CRLF &"will be pack as:"&GUICtrlRead($UnpMDD)&".mdd")=1 Then
+				   $iPIDPackMDD = Run("mdict --description "&GUICtrlRead($Descr)&" -a "&GUICtrlRead($UnpMDD)&" "&GUICtrlRead($UnpMDD)&".mdd", "", @SW_SHOWNORMAL)
 				         EndIf
 		              EndIf
 				   EndIf
-			    EndSwitch
+			EndSelect
 
-				; Switch from event Button_UnPack MDD-------------------------------11
-				Switch $aMsg[0]
-					Case $idButton_UnMDD
+		; Select Button_UnPack MDD-------------------------------11
+            Select
+                Case $msg = $idButton_UnMDD
 			     If $sPackMDD = 0 Or $sExt2 = "db"  Then
 				   MsgBox(8192, "", "You are not chosen MDD file")
 				 Else
-				   if MsgBox(1, "Your choice","You choose MDD file:"& @CRLF & ""&$PackMDD&""& @CRLF &"will be unpack in dir: MDD")=1 Then
-				   $iPIDUnMDD = Run("mdict -x "&$PackMDD&" -d ./mdd", "", @SW_SHOWNORMAL)
+				   if MsgBox(1, "Your choice","You choose MDD file:"& @CRLF & ""&GUICtrlRead($PackMDD)&""& @CRLF &"will be unpack in dir: MDD")=1 Then
+				   $iPIDUnMDD = Run("mdict -x "&GUICtrlRead($PackMDD)&" -d ./mdd", "", @SW_SHOWNORMAL)
 				       EndIf
 			       EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Button_UnPackMDD to Sqlite3-db------------------12
-				Switch $aMsg[0]
-					Case $idButton_UnpSqlite3
+		; Select Button_UnPackMDD to Sqlite3-db------------------12
+			Select
+                Case $msg = $idButton_UnpSqlite3
 			     If $sPackMDD = 0 Or $sExt2 = "mdd"  Then
 				   MsgBox(8192, "", "You are not chosen db file")
 				 Else
 				   If MsgBox(1, "Your choice","You choose Sqlite3 db file:"& @CRLF _
-					& ""&$PackMDD&""& @CRLF &"will be unpack as:"&$PackMDD&".txt")=1 Then
-				   $iPIDUn_db = Run("mdict --db-txt "&$PackMDD&"", "", @SW_SHOWNORMAL)
+					& ""&GUICtrlRead($PackMDD)&""& @CRLF &"will be unpack as:"&GUICtrlRead($PackMDD)&".txt")=1 Then
+				   $iPIDUn_db = Run("mdict --db-txt "&GUICtrlRead($PackMDD)&"", "", @SW_SHOWNORMAL)
 				      EndIf
 			       EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Button_Conv TXT Sql3----------------------------13
-				Switch $aMsg[0]
-				    Case $idButton_ConvSqlit
+		; Select Button_Conv TXT Sql3----------------------------13
+            Select
+                Case $msg = $idButton_ConvSqlit
 				 If $sUnp = 0 Then
 				   MsgBox(8192, "", "You are not chosen Mdict source")
 				 Else
-                   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&$Unp&""& @CRLF &"will be convert as:"&$Unp&".db")=1 Then
-				   $iPIDconv_db = Run("mdict --txt-db "&$Unp&"", "", @SW_SHOWNORMAL)
+                   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($Unp)&""& @CRLF &"will be convert as:"&GUICtrlRead($Unp)&".db")=1 Then
+				   $iPIDconv_db = Run("mdict --txt-db "&GUICtrlRead($Unp)&"", "", @SW_SHOWNORMAL)
 				      EndIf
 				   EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Button_Pack All TXT----------------------------14
-				Switch $aMsg[0]
-				    Case $idButton_PackDir
+		; Select Button_Pack All TXT----------------------------14
+            Select
+                Case $msg = $idButton_PackDir
 				 If $sUnp = 0 Then
 				   MsgBox(8192, "", "You are not chosen at last one Mdict source")
 			  Else
@@ -340,76 +334,76 @@ GUISetState(@SW_SHOW)
 				Else
 		           if MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
 				   &"all TXT will be pack as :"& @CRLF&$UnpDir&"\All_descr.mdx")=1 Then
-			$iPIDPack_all = Run("mdict --description "&$Descr&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
+			$iPIDPack_all = Run("mdict --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
 			           EndIf
 		             EndIf
 			       EndIf
-				EndSwitch
+		    EndSelect
 
-				; Switch from event Button_UnPackMDX/MDD to DB-------------------------15
-				Switch $aMsg[0]
-					Case $idButton_UnpMDX_DB
+		; Select Button_UnPackMDX/MDD to DB-------------------------15
+            Select
+				Case $msg = $idButton_UnpMDX_DB
 			     If $sPack = 0 Then
 				   MsgBox(8192, "", "You are not chosen MDX/MDD file")
 				 Else
-				$Pack_=_WinAPI_PathRemoveExtension($Pack)
+				$Pack_=_WinAPI_PathRemoveExtension($Pack1)
 				$Pack_=_WinAPI_PathRemoveExtension($Pack_)
 				if $sExt3 = "mdx" Then
-					if MsgBox(1, "Your choice","You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF & @CRLF &"is packing as :"& @CRLF &$Pack_&".mdx.db")=1 Then
-				   FileCopy($Pack, $Pack_&".mdx.mdx", $FC_OVERWRITE)
+					if MsgBox(1, "Your choice","You choosed MDX file:"& @CRLF & ""&GUICtrlRead($Pack)&""&@CRLF & @CRLF &"is packing as :"& @CRLF & GUICtrlRead($Pack)&".mdx.db")=1 Then
+				   FileCopy(GUICtrlRead($Pack), $Pack_&".mdx.mdx", $FC_OVERWRITE)
 				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdx.mdx --exdb", "", @SW_SHOWNORMAL)
 				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db!")
 				   FileDelete($Pack_&".mdx.mdx")
 				   EndIf
 					 Else
-				        if MsgBox(1,"Your choice","You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF _
+				        if MsgBox(1,"Your choice","You choosed MDX file:"& @CRLF & ""&GUICtrlRead($Pack)&""&@CRLF _
 					    & @CRLF &"is packing as :"& @CRLF &$Pack_&".mdd.db")=1 Then
-					FileCopy($Pack, $Pack_&".mdd.mdd", $FC_OVERWRITE)
+					FileCopy(GUICtrlRead($Pack), $Pack_&".mdd.mdd", $FC_OVERWRITE)
 				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdd.mdd --exdb", "", @SW_SHOWNORMAL)
 				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDD unpacks into a db!")
 				   FileDelete($Pack_&".mdd.mdd")
 				        EndIf
 				     EndIf
 			       EndIf
-				EndSwitch
+			EndSelect
 
-				; Switch from event Button_UnPackMDX/MDD to DBzip-----------------------16
-				Switch $aMsg[0]
-					Case $idButton_UnpMDX_DBzip
+		; Select Button_UnPackMDX/MDD to DBzip-----------------------16
+            Select
+                Case $msg = $idButton_UnpMDX_DBzip
 			     If $sPack = 0  Then
 				   MsgBox(4096, "", "You are not chosen MDX/MDD file")
 				 Else
-				$Pack_=_WinAPI_PathRemoveExtension($Pack)
+				$Pack_=_WinAPI_PathRemoveExtension($Pack1)
 				$Pack_=_WinAPI_PathRemoveExtension($Pack_)
 				if $sExt3 = "mdx" Then
-					  if MsgBox(1,"Your choice", "You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF _
+					  if MsgBox(1,"Your choice", "You choosed MDX file:"& @CRLF & ""&GUICtrlRead($Pack)&""&@CRLF _
 					  & @CRLF &"is packing as compressed:"& @CRLF &$Pack_&".mdx_zip.db") =1 Then
-				   FileCopy($Pack, $Pack_&".mdx_zip.mdx", $FC_OVERWRITE)
+				   FileCopy(GUICtrlRead($Pack), $Pack_&".mdx_zip.mdx", $FC_OVERWRITE)
 				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdx_zip.mdx --exdb-zip", "", @SW_SHOWNORMAL)
 				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDX unpacks into a db zip!")
 				   FileDelete($Pack_&".mdx_zip.mdx")
 				      EndIf
 					   Else
-					    if MsgBox(1,"Your choice","You choosed MDX file:"& @CRLF & ""&$Pack&""&@CRLF _
+					    if MsgBox(1,"Your choice","You choosed MDX file:"& @CRLF & ""&GUICtrlRead($Pack)&""&@CRLF _
 						& @CRLF &"is packing as compressed:"& @CRLF &$Pack_&".mdd_zip.db") =1 Then
-					FileCopy($Pack, $Pack_&".mdd_zip.mdd", $FC_OVERWRITE)
+					FileCopy(GUICtrlRead($Pack), $Pack_&".mdd_zip.mdd", $FC_OVERWRITE)
 				   $iPIDUnPack_zip = Run("mdict -x "&$Pack_&".mdd_zip.mdd --exdb-zip", "", @SW_SHOWNORMAL)
 				   MsgBox(8192, "Waiting for the end of Mdict","!Pls,wait while MDD unpacks into a db zip!")
 				   FileDelete($Pack_&".mdd_zip.mdd")
 				         EndIf
 				       EndIf
 				    EndIf
-				EndSwitch
+			EndSelect
 
-                        ; Switch from event Select Combo Split Parts----------------------------17
-				Switch $aMsg[0]
-			        Case $ComboSplit
+		; Select Choise Combo Split Parts----------------------------17
+            Select
+                Case $msg = $ComboSplit
 				$sComboRead = GUICtrlRead($ComboSplit)
-				EndSwitch
+			EndSelect
 
-		         ; Switch from event Button_UnPack MDX/MDD to Splits---------------------18
-				Switch $aMsg[0]
-					Case $idButton_UnpSplit
+		; Select Button_UnPack MDX/MDD to Splits---------------------18
+            Select
+                Case $msg = $idButton_UnpSplit
 			        If $sPack = 0  Then
 				   MsgBox(8192, "", "You are not chosen MDX/MDD file")
 					Else
@@ -418,60 +412,60 @@ GUISetState(@SW_SHOW)
 					 MsgBox(8192, "", "You are not chosen Splits: " & $sComboRead)
 				 Else
 				    if $sExt3="mdx"     Then
-				        if MsgBox(1,"Your choice","You choose MDX file:"& @CRLF & ""&$Pack&""& @CRLF _
+				        if MsgBox(1,"Your choice","You choose MDX file:"& @CRLF & ""&GUICtrlRead($Pack)&""& @CRLF _
 						&"will be unpacked into "&$sComboRead&" parts in dir : "&$sExt3)=1 Then
 						If $sComboRead = "az" Then
-				    $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdx --split-"&$sComboRead&"", "", @SW_SHOWNORMAL)
+				    $iPIDUnPackSplit = Run("mdict -x "&GUICtrlRead($Pack)&" -d ./mdx --split-"&$sComboRead&"", "", @SW_SHOWNORMAL)
                         Else
-				    $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdx --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
+				    $iPIDUnPackSplit = Run("mdict -x "&GUICtrlRead($Pack)&" -d ./mdx --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
 					EndIf
 				        EndIf
 				 ElseIf $sExt3="mdd"    Then
-				        if MsgBox(1,"Your choice","You choose MDD file:"& @CRLF & ""&$Pack&""& @CRLF _
+				        if MsgBox(1,"Your choice","You choose MDD file:"& @CRLF & ""&GUICtrlRead($Pack)&""& @CRLF _
 						&"will be unpacked into "&$sComboRead&" parts in dir : "&$sExt3)=1 Then
 						If $sComboRead = "az" Then
-				   $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdd --split-"&$sComboRead&"", "", @SW_SHOWNORMAL)
+				   $iPIDUnPackSplit = Run("mdict -x "&GUICtrlRead($Pack)&" -d ./mdd --split-"&$sComboRead&"", "", @SW_SHOWNORMAL)
 				        Else
-				   $iPIDUnPackSplit = Run("mdict -x "&$Pack&" -d ./mdd --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
+				   $iPIDUnPackSplit = Run("mdict -x "&GUICtrlRead($Pack)&" -d ./mdd --split-n "&$sComboRead&"", "", @SW_SHOWNORMAL)
 				   EndIf
 						EndIf
 				       EndIf
 					 EndIf
 			       EndIf
-				EndSwitch
+			EndSelect
 
-                       ; Switch from event Button GuiUpdate---------------------------------19
-				Switch $aMsg[0]
-			        Case $idButton_upd
+		; Select Button GuiUpdate------------------------------------19
+            Select
+                Case $msg = $idButton_upd
 				If MsgBox(1,"Check the latest mdictGui releases", "Want to check the GitHub repository"& @CRLF & _
 				"for the latest mdictGui releases?") = 1 Then ShellExecute("https://github.com/jekovcar/mdict-utils-Gui/releases")
-				EndSwitch
+			EndSelect
 
-                       ; Switch from event Button mdict Pypi-------------------------------20
-				Switch $aMsg[0]
-			        Case $idButton_pypi
+		; Select Button mdict Pypi-------------------------------20
+            Select
+                 Case $msg = $idButton_pypi
 				If MsgBox(1,"Check the latest mdict-utils", "Want to check Project mdict-utils"& @CRLF & _
 				"on Pypi.Org for the latest releases?") = 1 Then ShellExecute("https://pypi.org/project/mdict-utils/")
-				EndSwitch
+			EndSelect
 
-				; Switch from event button Query key--------------------------------21
-				Switch $aMsg[0]
-					Case $idButton_key
+		; Select button Query key--------------------------------21
+            Select
+                Case $msg = $idButton_key
 						$inp=GUICtrlRead($inp_word)
 						If $sPack = 0 Or $sExt3 = "mdd" Then
 				   MsgBox(8192, "", "You are not chosen MDX file")
 						Else
 			    If $inp = "" Then
 				       If MsgBox(1,"Your choice", "Typed word is EMPTY."& @CRLF & @CRLF &  "Mdict will All key list ?") = 1 Then
-					$iPIDquery = Run(@ComSpec & " /k "&$line&"\mdict.exe -k "&$Pack&"", "", @SW_SHOWNORMAL)
+					$iPIDquery = Run(@ComSpec & " /k "&$line&"\mdict.exe -k "&GUICtrlRead($Pack)&"", "", @SW_SHOWNORMAL)
 					   EndIf
 				    Else
-					If MsgBox(1,"Your choice", "Query word <"&$inp&"> in :"& @CRLF & @CRLF &$Pack&" ?") = 1 Then
-					$iPIDquery = Run(@ComSpec & " /k "&$line&"\mdict.exe -q "&$inp&" "&$Pack&"", "", @SW_SHOWNORMAL)
+					If MsgBox(1,"Your choice", "Query word <"&$inp&"> in :"& @CRLF & @CRLF &GUICtrlRead($Pack)&" ?") = 1 Then
+					$iPIDquery = Run(@ComSpec & " /k "&$line&"\mdict.exe -q "&$inp&" "&GUICtrlRead($Pack)&"", "", @SW_SHOWNORMAL)
 					  EndIf
 					EndIf
 				 EndIf
-				EndSwitch
+			EndSelect
 
 	WEnd
 	Run(@ComSpec & " /c taskkill /IM cmd.exe /F","",@SW_HIDE)
