@@ -5,5 +5,7 @@ Python\Scripts\mdict.exe file, when install as:<br>python -m pip install mdict u
 (https://www.python.org/downloads/) in Python for Windows 
 # Reference
 <p4>https://github.com/liuyug/mdict-utils<br>
-https://github.com/zhansliu/writemdict
+https://github.com/zhansliu/writemdict<br>
+https://github.com/BorisNA/addflex<br>
+https://github.com/BorisNA/wordforms
 
