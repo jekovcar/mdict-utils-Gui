@@ -8,7 +8,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.8.1", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.8.2", 792, 641, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 440, 16, 60, 24)
@@ -43,9 +43,7 @@ $idButton_UnpSplit = GUICtrlCreateButton("UnpFile Split", 315, 232, 80, 22)
 GUICtrlSetTip(-1, "Unpack MDX/MDD into 'az/n' parts.")
 $ComboSplit = GUICtrlCreateCombo("0", 400, 232, 40, 22)
 GUICtrlSetData($ComboSplit, "az|2|3|4|5|6|7|8|9|10", "0")
-GUICtrlSetTip(-1, "Select az(a...z), 2-10 parts")
-
-GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
+GUICtrlSetTip(-1, "Select az(a...z), 2-10 parts of split")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupPackMDD = GUICtrlCreateGroup("Pack MDD", 29, 282, 393, 80)
@@ -73,25 +71,29 @@ $GroupInflex = GUICtrlCreateGroup("Generate Inflection", 440, 274, 325, 209)
 $iButtonInfoFlex = GUICtrlCreateButton("Info addFlex", 668, 286, 70, 25)
 GUICtrlSetTip(-1, "Introduction for Inflection")
 $iButtonPython = GUICtrlCreateButton("Python", 446, 314, 40, 25)
-GUICtrlSetTip(-1, "In Your Python installed(Portable) dir")
+GUICtrlSetTip(-1, "Select Python.exe installed(Portable)")
 $Pyth = GUICtrlCreateEdit("Python exe", 492, 315, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+GUICtrlSetTip(-1, "Path of Python.exe installed(Portable)")
 $iButton_flexpy = GUICtrlCreateButton("FlexPy", 446, 360, 40, 25)
-GUICtrlSetTip(-1, "Get Python scrip by Info addFlex")
+GUICtrlSetTip(-1, "Select addflex-main Python scrip")
 $flexpy = GUICtrlCreateEdit("addflex_mdx py -> for Mdict"& @CRLF &"addflex_df py -> for Kobo dict", 492, 361, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+GUICtrlSetTip(-1, "Download it from github.com/BorisNA/addflex")
 $iButtonForm = GUICtrlCreateButton("Forms", 446, 405, 40, 26)
-GUICtrlSetTip(-1, "Download from github.com/BorisNA/wordforms")
+GUICtrlSetTip(-1, "Select wordforms")
 $WordForm = GUICtrlCreateEdit("Forms txt", 492, 406, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+GUICtrlSetTip(-1, "Download it from github.com/BorisNA/wordforms")
 $iButtonConvFlex = GUICtrlCreateButton("Convert Flex", 480, 448, 70, 25)
-GUICtrlSetTip(-1, "Generate Standalone inflection or Morphological dictionary")
+GUICtrlSetTip(-1, "Generate inflection")
 $ComboInflex = GUICtrlCreateCombo("Standalone inflection", 558, 450, 140, 26)
 GUICtrlSetData(-1, "Standalone inflection|Morphological dictionary|Kobo dictionary")
-GUICtrlSetTip(-1, "Select , a target dictionary generation")
+GUICtrlSetTip(-1, "Select , a target dictionary to generate")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupConca = GUICtrlCreateGroup("Concatenate Morph dict + source Mdict", 440, 488, 325, 129)
 $iButtonMorph = GUICtrlCreateButton("Morpho dict", 457, 506, 73, 25)
 GUICtrlSetTip(-1, "Select Generated Morphological dictionary")
 $Morph = GUICtrlCreateEdit("Morphological txt", 458, 536, 280, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+GUICtrlSetTip(-1, "Path of generated 'Morphological dictionary'")
 $iButtonConca = GUICtrlCreateButton("Concatenate", 636, 576, 73, 25)
 GUICtrlSetTip(-1, "Concatenate 'Morphological dictionary' with Selected 'Source Mdict'")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -145,11 +147,11 @@ GUISetState(@SW_SHOW)
 	        Local $iFileExists = FileExists("mdict.exe")
 	    If $iFileExists Then
                Else
-            If MsgBox(262209,"Check Mdict-utils","The mdict doesn't exist." & @CRLF & @CRLF & _
+            If MsgBox(262209,"Check Mdict-utils","The 'mdict-utils' doesn't exist. Mdict section will not work." & @CRLF & @CRLF & _
            "Pls visit, " & "github/liuyug/mdict-utils" & @CRLF & _
            "to download last 'mdict-windows'."& @CRLF & "Put mdictGui to 'mdict-windows'." & @CRLF) _
 		   = 1 Then ShellExecute("https://github.com/liuyug/mdict-utils/releases")
-               Exit
+
 		        EndIf
 
 		    ; Initialize a Local RUN script.
