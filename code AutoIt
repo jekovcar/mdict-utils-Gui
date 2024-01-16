@@ -147,11 +147,13 @@ GUISetState(@SW_SHOW)
 	        Local $iFileExists = FileExists("mdict.exe")
 	    If $iFileExists Then
                Else
-            If MsgBox(262209,"Check Mdict-utils","The 'mdict-utils' doesn't exist. Mdict section will not work." & @CRLF & @CRLF & _
+            If MsgBox(262209,"Check Mdict-utils","'mdict-utils' doesn't exist. Mdict section won't work." & @CRLF & @CRLF & _
            "Pls visit, " & "github/liuyug/mdict-utils" & @CRLF & _
            "to download last 'mdict-windows'."& @CRLF & "Put mdictGui to 'mdict-windows'." & @CRLF) _
 		   = 1 Then ShellExecute("https://github.com/liuyug/mdict-utils/releases")
-
+                GUICtrlCreateLabel("'mdict-utils' does not exist. Mdict section won't work", 108, 148, 309, 20)
+				GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
+                GUICtrlSetBkColor(-1, 0xFFFF00)
 		        EndIf
 
 		    ; Initialize a Local RUN script.
