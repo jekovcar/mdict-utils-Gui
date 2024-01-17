@@ -8,7 +8,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.8.2", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.8.3", 792, 641, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 440, 16, 60, 24)
@@ -578,12 +578,12 @@ GUISetState(@SW_SHOW)
 				If $sComboReadInflex = "Standalone inflection" Then
 				If StringInStr(GUICtrlRead($flexpy), "addflex_df.py") > 0 Then MsgBox( 0, "", "Selected Scrip for Kobo dict NOT convert properly.")
 				If MsgBox(1, "Standalone inflection","You choose WordForm file:"& @CRLF & ""&GUICtrlRead($WordForm)&""& @CRLF &"will be convert to: "&$Form&"_infl.txt")= 1 Then
-                   $iPIDConvFlex = Run(GUICtrlRead($Pyth)&" "&GUICtrlRead($flexpy)&" -t "&GUICtrlRead($WordForm)&" -o "&$Form&"_infl.txt", "", @SW_SHOWNORMAL)
+                   $iPIDConvFlex = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" "&GUICtrlRead($flexpy)&" -t "&GUICtrlRead($WordForm)&" -o "&$Form&"_infl.txt", "", @SW_SHOWNORMAL)
                       EndIf
 				ElseIf $sComboReadInflex = "Morphological dictionary" Then
 				If StringInStr(GUICtrlRead($flexpy), "addflex_df.py") > 0 Then MsgBox( 0, "", "Selected Scrip for Kobo dict NOT convert properly.")
 				If MsgBox(1, "Morphological dictionary","You choose WordForm file:"& @CRLF & ""&GUICtrlRead($WordForm)&""& @CRLF &"will be convert to: "&$Form&"_morph.txt")= 1 Then
-                   $iPIDConvFlex = Run(GUICtrlRead($Pyth)&" "&GUICtrlRead($flexpy)&" -l -t "&GUICtrlRead($WordForm)&" -o "&$Form&"_morph.txt", "", @SW_SHOWNORMAL)
+                   $iPIDConvFlex = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" "&GUICtrlRead($flexpy)&" -l -t "&GUICtrlRead($WordForm)&" -o "&$Form&"_morph.txt", "", @SW_SHOWNORMAL)
 				      EndIf
 				Else
                 If $skob =0 Then
@@ -591,7 +591,7 @@ GUISetState(@SW_SHOW)
 				Else
 				If StringInStr(GUICtrlRead($flexpy), "addflex_mdx.py") > 0 Then MsgBox( 0, "", "Selected Scrip for Mdict NOT convert properly.")
  				If MsgBox(1, "Kobo dictionary","You choose WordForm file:"& @CRLF & ""&GUICtrlRead($WordForm)&""& @CRLF &"will be convert to: "&$kobo_&"_out.df")= 1 Then
-                   $iPIDConvFlex = Run(GUICtrlRead($Pyth)&" "&GUICtrlRead($flexpy)&" -i "&GUICtrlRead($kobo)&" -o "&$kobo_&"_out.df -t "&GUICtrlRead($WordForm), "", @SW_SHOWNORMAL)
+                   $iPIDConvFlex = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" "&GUICtrlRead($flexpy)&" -i "&GUICtrlRead($kobo)&" -o "&$kobo_&"_out.df -t "&GUICtrlRead($WordForm), "", @SW_SHOWNORMAL)
 				         EndIf
 					  EndIf
 				   EndIf
