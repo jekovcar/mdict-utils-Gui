@@ -273,7 +273,7 @@ GUISetState(@SW_SHOW)
 			     If $sPack = 0 Then
 				   MsgBox(8192, "", "You are not chosen MDX/MDD file")
 				 Else
-				   $iPIDMeta = Run(@ComSpec & " /k "&$line&"\mdict.exe -m "& GUICtrlRead($Pack)&"", "", @SW_SHOWNORMAL)
+				   $iPIDMeta = Run(@ComSpec & " /k "&GUICtrlRead($Mdict)&" -m "& GUICtrlRead($Pack)&"", "", @SW_SHOWNORMAL)
 			       EndIf
 			EndSelect
 
@@ -281,7 +281,7 @@ GUISetState(@SW_SHOW)
            Select
                 Case $msg = $idButton_vers
                    Run("cmd /c",@SW_SHOW)
-				   $iPIDvers = Run(@ComSpec & " /k "&$line&"\mdict.exe --version", "", @SW_SHOWNORMAL)
+				   $iPIDvers = Run(@ComSpec & " /k "&GUICtrlRead($Mdict)&" --version", "", @SW_SHOWNORMAL)
 			EndSelect
 
 		; Select  Folder MDD----------------------------------8
@@ -509,11 +509,11 @@ GUISetState(@SW_SHOW)
 						Else
 			    If $inp = "" Then
 				       If MsgBox(1,"Your choice", "Typed word is EMPTY."& @CRLF & @CRLF &  "Mdict will All key list ?") = 1 Then
-					$iPIDquery = Run(@ComSpec & " /k "&$line&"\mdict.exe -k "&GUICtrlRead($Pack)&"", "", @SW_SHOWNORMAL)
+					$iPIDquery = Run(@ComSpec & " /k "&GUICtrlRead($Mdict)&" -k "&GUICtrlRead($Pack)&"", "", @SW_SHOWNORMAL)
 					   EndIf
 				    Else
 					If MsgBox(1,"Your choice", "Query word <"&$inp&"> in :"& @CRLF & @CRLF &GUICtrlRead($Pack)&" ?") = 1 Then
-					$iPIDquery = Run(@ComSpec & " /k "&$line&"\mdict.exe -q "&$inp&" "&GUICtrlRead($Pack)&"", "", @SW_SHOWNORMAL)
+					$iPIDquery = Run(@ComSpec & " /k "&GUICtrlRead($Mdict)&" -q "&$inp&" "&GUICtrlRead($Pack)&"", "", @SW_SHOWNORMAL)
 					  EndIf
 					EndIf
 				 EndIf
