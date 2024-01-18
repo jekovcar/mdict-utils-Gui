@@ -1,8 +1,3 @@
-#AutoIt3Wrapper_Res_Fileversion=0.8.5
-#AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.8.5
-#AutoIt3Wrapper_Res_CompanyName=jekovcar
-#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
 #include <MsgBoxConstants.au3>
 #include <FileConstants.au3>
@@ -13,7 +8,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.8.5", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.8.6", 792, 641, 192, 125)
 
 $iButtonMdict = GUICtrlCreateButton("Mdict", 456, 24, 65, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
@@ -77,9 +72,17 @@ GUICtrlCreateLabel("Enter <WORD> to request the key. Empty for all key list", 13
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 GUICtrlCreateLabel("MORPHOLOGY , INFLECTIONS ( HOMONYMS )", 510, 144, 268, 17)
-$GroupInflex = GUICtrlCreateGroup("Generate Inflection", 440, 274, 325, 209)
-$iButtonInfoFlex = GUICtrlCreateButton("Info addFlex", 668, 286, 70, 25)
+
+$GroupKobo = GUICtrlCreateGroup("Kobo dict", 480, 168, 285, 97)
+$iButtonInfoFlex = GUICtrlCreateButton("Info addFlex", 678, 182, 74, 25)
 GUICtrlSetTip(-1, "Introduction for Inflection")
+$kobo = GUICtrlCreateEdit("Kobo df", 492, 222, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+GUICtrlSetTip(-1, "Path of Kobo dictfile")
+$iButtonKobo = GUICtrlCreateButton("Kobo", 494, 189, 40, 25)
+GUICtrlSetTip(-1, "Select Kobo dictfile")
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+$GroupInflex = GUICtrlCreateGroup("Generate Inflection", 440, 282, 325, 200)
 $iButtonPython = GUICtrlCreateButton("Python", 446, 314, 40, 25)
 GUICtrlSetTip(-1, "Select Python.exe installed(Portable)")
 $Pyth = GUICtrlCreateEdit("Python exe", 492, 315, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
@@ -106,13 +109,6 @@ $Morph = GUICtrlCreateEdit("Morphological txt", 458, 536, 280, 32, BitOR($ES_MUL
 GUICtrlSetTip(-1, "Path of generated 'Morphological dictionary'")
 $iButtonConca = GUICtrlCreateButton("Concatenate", 636, 576, 73, 25)
 GUICtrlSetTip(-1, "Concatenate 'Morphological dictionary' with Selected 'Source Mdict'")
-GUICtrlCreateGroup("", -99, -99, 1, 1)
-
-$GroupKobo = GUICtrlCreateGroup("Kobo dict", 480, 168, 285, 97)
-$kobo = GUICtrlCreateEdit("Kobo df", 492, 222, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
-GUICtrlSetTip(-1, "Path of Kobo dictfile")
-$iButtonKobo = GUICtrlCreateButton("Kobo", 494, 189, 40, 25)
-GUICtrlSetTip(-1, "Select Kobo dictfile")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 GUICtrlCreateLabel("All files must be UTF-8 encoding, include HTML and TXT", 65, 595, 350, 20)
@@ -530,13 +526,15 @@ GUISetState(@SW_SHOW)
 		        $sMessagePack = "Please select path of PYTHON."
                 $Pyth1 = FileOpenDialog($sMessagePack, @desktopdir & "\", "python (python.exe)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
 	            If @error Then
-	             Else
-                 $Pyth1 = StringReplace($Pyth1, "|", @CRLF)
+				Else
+					; Check file path for spaces.
+				If StringInStr($Pyth1, " ") > 0 Then
+				MsgBox( 0, "", "There is a space in the 'file' path, pls to select correct.")
+                Else
+                    $Pyth1 = StringReplace($Pyth1, "|", @CRLF)
 		            GUICtrlSetData($Pyth, $Pyth1 )
 					IniWrite ($line&"\mdictGui_.ini", "Python", "PythonPath", GUICtrlRead($Pyth))
-				    ; Check file path for spaces.
-		            If StringInStr($Pyth1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
-					;----------------------
+                     EndIf
                   EndIf
 			EndSelect
 
@@ -665,15 +663,18 @@ GUISetState(@SW_SHOW)
             Select
                 Case $msg = $iButtonMdict
                 $Mdict1 = FileOpenDialog("Please select your Mdict.exe.", @desktopdir & "\", "Mdict  (Mdict.exe)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
-			    If @error Or StringInStr($Mdict1, " ") > 0 Then
+			    If @error Then
+                Else
+				   ; Check file path for spaces.
+				If StringInStr($Mdict1, " ") > 0 Then
 				MsgBox( 0, "", "There is a space in the 'file' path, pls to select correct.")
                 Else
-                $Mdict1 = StringReplace($Mdict1, "|", @CRLF)
+				$Mdict1 = StringReplace($Mdict1, "|", @CRLF)
 				GUICtrlSetData($Mdict, $Mdict1 )
 				IniWrite ($line&"\mdictGui_.ini", "Mdict", "MdictPath", GUICtrlRead($Mdict))
+				GUICtrlSetData($Mdict, $Mdict1 )
 				MsgBox( 0, "", "Pls to restart Gui for effect.")
-				   ; Check file path for spaces.
-		            ;----------------------
+				    EndIf
                   EndIf
             EndSelect
 
