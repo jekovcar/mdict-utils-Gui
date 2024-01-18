@@ -8,7 +8,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.8.3", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.8.4", 792, 641, 192, 125)
 
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 440, 16, 60, 24)
@@ -67,6 +67,7 @@ GUICtrlSetTip(-1, "Only used to test whether dictionary packaging is correct." &
 GUICtrlCreateLabel("Enter <WORD> to request the key. Empty for all key list", 139, 550, 282, 20)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
+GUICtrlCreateLabel("MORPHOLOGY , INFLECTIONS ( HOMONYMS )", 510, 144, 268, 17)
 $GroupInflex = GUICtrlCreateGroup("Generate Inflection", 440, 274, 325, 209)
 $iButtonInfoFlex = GUICtrlCreateButton("Info addFlex", 668, 286, 70, 25)
 GUICtrlSetTip(-1, "Introduction for Inflection")
@@ -130,7 +131,6 @@ GUISetState(@SW_SHOW)
 		Local  $sPack=0
 		Local  $sUnMDD=0
 		Local  $sPackMDD=0
-		Local  $sPyth=0
 		Local  $sPyaddflex=0
 		Local  $sForms=0
 		Local  $sMorph=0
@@ -161,7 +161,9 @@ GUISetState(@SW_SHOW)
 				RunWait(@ComSpec & " /c %SystemDrive%&&cd %temp%&&echo %cd%>temp.tmp", "", @SW_hide); create temp file to save %cd%
                 $file = FileOpen(@TempDir & "\temp.tmp", 0)
                 $line = FileReadLine($file)
-
+			   ; Read from INI.
+                GUICtrlSetData ($Pyth, IniRead ($line&"\mdictGui_.ini", "Python", "PythonPath", ""))
+				;------------------------------
 		        ; Check file path for spaces.
 		        If StringInStr($line, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'мdict' path and it may not work properly.")
                 ;------------------------------
@@ -521,8 +523,8 @@ GUISetState(@SW_SHOW)
 	            If @error Then
 	             Else
                  $Pyth1 = StringReplace($Pyth1, "|", @CRLF)
-		         $sPyth=1
 		            GUICtrlSetData($Pyth, $Pyth1 )
+					IniWrite ($line&"\mdictGui_.ini", "Python", "PythonPath", GUICtrlRead($Pyth))
 				    ; Check file path for spaces.
 		            If StringInStr($Pyth1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
 					;----------------------
@@ -571,7 +573,7 @@ GUISetState(@SW_SHOW)
 		; Select Button_UnPack MDX ----------------------------26
 			Select
 				Case $msg = $iButtonConvFlex
-			     If $sPyth=0 Or $sPyaddflex=0 Or $sForms=0 Then
+			     If GUICtrlRead($Pyth)="" Or $sPyaddflex=0 Or $sForms=0 Then
 				   MsgBox(8192, "", "You are not chosen all of need file paths")
 				 Else
 				   $sComboReadInflex = GUICtrlRead($ComboInflex)
