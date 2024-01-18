@@ -1,3 +1,8 @@
+#AutoIt3Wrapper_Res_Fileversion=0.8.5
+#AutoIt3Wrapper_Res_ProductName=mdictGui
+#AutoIt3Wrapper_Res_ProductVersion=0.8.5
+#AutoIt3Wrapper_Res_CompanyName=jekovcar
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
 #include <MsgBoxConstants.au3>
 #include <FileConstants.au3>
