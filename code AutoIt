@@ -672,7 +672,6 @@ GUISetState(@SW_SHOW)
 				$Mdict1 = StringReplace($Mdict1, "|", @CRLF)
 				GUICtrlSetData($Mdict, $Mdict1 )
 				IniWrite ($line&"\mdictGui_.ini", "Mdict", "MdictPath", GUICtrlRead($Mdict))
-				GUICtrlSetData($Mdict, $Mdict1 )
 				MsgBox( 0, "", "Pls to restart Gui for effect.")
 				    EndIf
                   EndIf
