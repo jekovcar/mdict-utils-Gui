@@ -1,3 +1,13 @@
+#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
+#AutoIt3Wrapper_Icon=mdict.ico
+#AutoIt3Wrapper_UseUpx=y
+#AutoIt3Wrapper_UseX64=n
+#AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
+#AutoIt3Wrapper_Res_Fileversion=0.8.7
+#AutoIt3Wrapper_Res_ProductName=mdictGui
+#AutoIt3Wrapper_Res_ProductVersion=0.8.7
+#AutoIt3Wrapper_Res_CompanyName=jekovcar
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
 #include <MsgBoxConstants.au3>
 #include <FileConstants.au3>
@@ -8,7 +18,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.8.6", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.8.7", 792, 641, 192, 125)
 
 $iButtonMdict = GUICtrlCreateButton("Mdict", 456, 24, 65, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
@@ -17,7 +27,7 @@ GUICtrlSetTip(-1, "Path of mdict-utils ")
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 712, 16, 60, 24)
 GUICtrlSetTip(-1, "GitHub mdictGui")
-$idButton_vers = GUICtrlCreateButton("MdictVers", 712, 90, 60, 24)
+$idButton_vers = GUICtrlCreateButton("MdictVers", 712, 86, 60, 24)
 GUICtrlSetTip(-1, "Display Mdict-utils version")
 $idButton_pypi = GUICtrlCreateButton("MdictUpd", 712, 50, 60, 24)
 GUICtrlSetTip(-1, "pypi.org/project/mdict-utils/")
@@ -72,6 +82,7 @@ GUICtrlCreateLabel("Enter <WORD> to request the key. Empty for all key list", 13
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 GUICtrlCreateLabel("MORPHOLOGY , INFLECTIONS ( HOMONYMS )", 510, 144, 268, 17)
+GUICtrlSetTip(-1, "Section Generate for Mdict , StarDict & Kobo dictfile")
 
 $GroupKobo = GUICtrlCreateGroup("Kobo dict", 480, 168, 285, 97)
 $iButtonInfoFlex = GUICtrlCreateButton("Info addFlex", 678, 182, 74, 25)
@@ -83,9 +94,9 @@ GUICtrlSetTip(-1, "Select Kobo dictfile")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupInflex = GUICtrlCreateGroup("Generate Inflection", 440, 282, 325, 200)
-$iButtonPython = GUICtrlCreateButton("Python", 446, 314, 40, 25)
+$iButtonPython = GUICtrlCreateButton("Python", 446, 300, 40, 25)
 GUICtrlSetTip(-1, "Select Python.exe installed(Portable)")
-$Pyth = GUICtrlCreateEdit("Python exe", 492, 315, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+$Pyth = GUICtrlCreateEdit("Python exe", 492, 300, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 GUICtrlSetTip(-1, "Path of Python.exe installed(Portable)")
 $iButton_flexpy = GUICtrlCreateButton("FlexPy", 446, 360, 40, 25)
 GUICtrlSetTip(-1, "Select addflex-main Python scrip")
@@ -136,7 +147,6 @@ GUISetState(@SW_SHOW)
 		Local  $sPack=0
 		Local  $sUnMDD=0
 		Local  $sPackMDD=0
-		Local  $sPyaddflex=0
 		Local  $sForms=0
 		Local  $sMorph=0
 		Local  $skob=0
@@ -156,6 +166,17 @@ GUISetState(@SW_SHOW)
 			   ; Read from INI.
                 GUICtrlSetData ($Pyth, IniRead ($line&"\mdictGui_.ini", "Python", "PythonPath", ""))
 				GUICtrlSetData ($Mdict, IniRead ($line&"\mdictGui_.ini", "Mdict", "MdictPath", ""))
+				GUICtrlSetData ($flexpy, IniRead ($line&"\mdictGui_.ini", "Addflex", "addflexpy", ""))
+				;-------------Label--addflex script
+				     If StringInStr(GUICtrlRead($flexpy), "addflex_mdx.py") > 0 Then
+				GUICtrlCreateLabel("           Selected 'addflex_mdx py' -> Mdict", 500, 344, 240, 17)
+                GUICtrlSetBkColor(-1, 0xFFFFFF)
+				     ElseIf StringInStr(GUICtrlRead($flexpy), "addflex_df.py") > 0 Then
+				GUICtrlCreateLabel("           Selected 'addflex_df py' -> Kobo df", 500, 344, 240, 17)
+                GUICtrlSetBkColor(-1, 0xFFFFFF)
+				     Else
+				GUICtrlCreateLabel("addflex_mdx py -> Mdict ; addflex_df py -> Kobo df", 500, 344, 240, 17)
+                       EndIf
 				;------------------------------
 		        ; Check file path for spaces.
 		        If StringInStr($line, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'мdict' path and it may not work properly.")
@@ -542,12 +563,21 @@ GUISetState(@SW_SHOW)
 			Select
                 Case $msg = $iButton_flexpy
 		        $sMessagePack = "Please select PY script addflex_mdx."
-                $flexpy1 = FileOpenDialog($sMessagePack, @desktopdir & "\", "addflex_ (*.py)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+                $flexpy1 = FileOpenDialog($sMessagePack, @desktopdir & "\", "addflex (addflex_df.py;addflex_mdx.py)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
 	            If @error Then
 	             Else
-                 $flexpy1 = StringReplace($flexpy1, "|", @CRLF)
-		         $sPyaddflex=1
+                    $flexpy1 = StringReplace($flexpy1, "|", @CRLF)
 		            GUICtrlSetData($flexpy, $flexpy1 )
+					IniWrite ($line&"\mdictGui_.ini", "Addflex", "addflexpy", GUICtrlRead($flexpy))
+				;-------------Label--addflex script
+				     If StringInStr(GUICtrlRead($flexpy), "addflex_mdx.py") > 0 Then
+				GUICtrlCreateLabel("           Selected 'addflex_mdx py' -> Mdict", 500, 344, 240, 17)
+                GUICtrlSetBkColor(-1, 0xFFFFFF)
+				     ElseIf StringInStr(GUICtrlRead($flexpy), "addflex_df.py") > 0 Then
+				GUICtrlCreateLabel("           Selected 'addflex_df py' -> Kobo df", 500, 344, 240, 17)
+                GUICtrlSetBkColor(-1, 0xFFFFFF)
+				     Else
+                       EndIf
 				    ; Check file path for spaces.
 		            If StringInStr($flexpy1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
                     ;----------------------
@@ -580,7 +610,7 @@ GUISetState(@SW_SHOW)
 		; Select Button_UnPack MDX ----------------------------26
 			Select
 				Case $msg = $iButtonConvFlex
-			     If GUICtrlRead($Pyth)="" Or $sPyaddflex=0 Or $sForms=0 Then
+			     If GUICtrlRead($Pyth)="" Or GUICtrlRead($flexpy)="" Or $sForms=0 Then
 				   MsgBox(8192, "", "You are not chosen all of need file paths")
 				 Else
 				   $sComboReadInflex = GUICtrlRead($ComboInflex)
@@ -596,7 +626,7 @@ GUISetState(@SW_SHOW)
 				      EndIf
 				Else
                 If $skob =0 Then
-				   MsgBox(8192, "", "You are not chosen needed Kobo dictfile paths")
+				   MsgBox(8192, "", "You are not chosen needed Kobo dictfile path")
 				Else
 				If StringInStr(GUICtrlRead($flexpy), "addflex_mdx.py") > 0 Then MsgBox( 0, "", "Selected Scrip for Mdict NOT convert properly.")
  				If MsgBox(1, "Kobo dictionary","You choose WordForm file:"& @CRLF & ""&GUICtrlRead($WordForm)&""& @CRLF &"will be convert to: "&$kobo_&"_out.df")= 1 Then
@@ -639,7 +669,7 @@ GUISetState(@SW_SHOW)
             Select
                 Case $msg = $iButtonInfoFlex
 				If MsgBox(1,"Github addflex", "Go to Github addflex release"& @CRLF & _
-				"for Introduction to addflex?") = 1 Then ShellExecute("https://github.com/BorisNA/addflex")
+				"for Introduction to addflex?") = 1 Then ShellExecute("https://github.com/BorisNA/addflex#introduction-to-addflex")
 			EndSelect
 
 		; Select path of  Kobo dict -----------------------------30
