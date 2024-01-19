@@ -183,8 +183,8 @@ GUISetState(@SW_SHOW)
                 ;------------------------------
 
 		   ; Display a message of whether the file Mdict path exists
-            If GUICtrlRead($Mdict)="" Then
-            If MsgBox(262209,"Check Mdict-utils","'mdict.exe'path doesn't exist. Mdict section won't work." & @CRLF & @CRLF & _
+            If FileOpen(GUICtrlRead($Mdict))=-1 Then
+            If MsgBox(262209,"Check Mdict-utils","'mdict.exe' doesn't exist. Mdict section won't work." & @CRLF & @CRLF & _
            "Pls visit, " & "github/liuyug/mdict-utils" & @CRLF & _
            "to download last 'mdict-windows'.") = 1 Then ShellExecute("https://github.com/liuyug/mdict-utils/releases")
                 GUICtrlCreateLabel("'mdict-utils' does not exist. Mdict section won't work", 108, 148, 309, 20)
@@ -192,6 +192,7 @@ GUISetState(@SW_SHOW)
                 GUICtrlSetBkColor(-1, 0xFFFF00)
 				Else
 		        EndIf
+				FileClose(GUICtrlRead($Mdict))
 
 		    Local $msg = 0
     While $msg <> $GUI_EVENT_CLOSE
