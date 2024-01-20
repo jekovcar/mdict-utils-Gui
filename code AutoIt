@@ -3,9 +3,9 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.8.7
+#AutoIt3Wrapper_Res_Fileversion=0.8.8
 #AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.8.7
+#AutoIt3Wrapper_Res_ProductVersion=0.8.8
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
@@ -18,7 +18,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.8.7", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.8.8", 792, 641, 192, 125)
 
 $iButtonMdict = GUICtrlCreateButton("Mdict", 456, 24, 65, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
@@ -171,9 +171,11 @@ GUISetState(@SW_SHOW)
 				     If StringInStr(GUICtrlRead($flexpy), "addflex_mdx.py") > 0 Then
 				GUICtrlCreateLabel("           Selected 'addflex_mdx py' -> Mdict", 500, 344, 240, 17)
                 GUICtrlSetBkColor(-1, 0xFFFFFF)
+				GUICtrlSetData($ComboInflex,"Standalone inflection")
 				     ElseIf StringInStr(GUICtrlRead($flexpy), "addflex_df.py") > 0 Then
 				GUICtrlCreateLabel("           Selected 'addflex_df py' -> Kobo df", 500, 344, 240, 17)
                 GUICtrlSetBkColor(-1, 0xFFFFFF)
+				GUICtrlSetData($ComboInflex,"Kobo dictionary")
 				     Else
 				GUICtrlCreateLabel("addflex_mdx py -> Mdict ; addflex_df py -> Kobo df", 500, 344, 240, 17)
                        EndIf
@@ -574,10 +576,12 @@ GUISetState(@SW_SHOW)
 				     If StringInStr(GUICtrlRead($flexpy), "addflex_mdx.py") > 0 Then
 				GUICtrlCreateLabel("           Selected 'addflex_mdx py' -> Mdict", 500, 344, 240, 17)
                 GUICtrlSetBkColor(-1, 0xFFFFFF)
+				GUICtrlSetData($ComboInflex,"Standalone inflection")
 				     ElseIf StringInStr(GUICtrlRead($flexpy), "addflex_df.py") > 0 Then
 				GUICtrlCreateLabel("           Selected 'addflex_df py' -> Kobo df", 500, 344, 240, 17)
                 GUICtrlSetBkColor(-1, 0xFFFFFF)
-				     Else
+				GUICtrlSetData($ComboInflex,"Kobo dictionary")
+					 Else
                        EndIf
 				    ; Check file path for spaces.
 		            If StringInStr($flexpy1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
@@ -608,7 +612,7 @@ GUISetState(@SW_SHOW)
 				$sComboReadInflex = GUICtrlRead($ComboInflex)
 			EndSelect
 
-		; Select Button_UnPack MDX ----------------------------26
+		; Select Button_ConvertFlex ----------------------------26
 			Select
 				Case $msg = $iButtonConvFlex
 			     If GUICtrlRead($Pyth)="" Or GUICtrlRead($flexpy)="" Or $sForms=0 Then
