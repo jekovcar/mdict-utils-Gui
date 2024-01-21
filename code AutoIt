@@ -112,9 +112,9 @@ $ComboInflex = GUICtrlCreateCombo("Standalone inflection", 526, 444, 140, 26)
 GUICtrlSetData(-1, "Standalone inflection|Morphological dictionary|Kobo dictionary")
 GUICtrlSetTip(-1, "Select , a target dictionary to generate")
 $iButtonFscript = GUICtrlCreateButton("FScript", 446, 464, 42, 26)
-GUICtrlSetTip(-1, "Select wordform script")
-$iButtonRunS = GUICtrlCreateButton("RunS", 446, 494, 42, 22)
-GUICtrlSetTip(-1, "Run wordform script")
+GUICtrlSetTip(-1, "Select check_wordforms script")
+$iButtonRunS = GUICtrlCreateButton("Check", 446, 494, 42, 22)
+GUICtrlSetTip(-1, "Check wordforms")
 $FScript = GUICtrlCreateEdit("wordform script py", 494, 478, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 GUICtrlSetTip(-1, "Download it from github.com/BorisNA/wordforms")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -726,7 +726,7 @@ GUISetState(@SW_SHOW)
 			Select
                 Case $msg = $iButtonFscript
 		        $sMessagePack = "Please select path of wordform script."
-                $Fscript1 = FileOpenDialog($sMessagePack, @desktopdir & "\", "scripts (*.py)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+                $Fscript1 = FileOpenDialog($sMessagePack, @desktopdir & "\", "script (check_wordforms.py)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
 	            If @error Then
 				Else
 					; Check file path for spaces.
