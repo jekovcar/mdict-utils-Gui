@@ -3,9 +3,9 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.8.8
+#AutoIt3Wrapper_Res_Fileversion=0.8.9
 #AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.8.8
+#AutoIt3Wrapper_Res_ProductVersion=0.8.9
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
@@ -18,7 +18,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.8.8", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.8.9", 792, 641, 192, 125)
 
 $iButtonMdict = GUICtrlCreateButton("Mdict", 456, 24, 65, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
@@ -93,7 +93,7 @@ $iButtonKobo = GUICtrlCreateButton("Kobo", 494, 189, 40, 25)
 GUICtrlSetTip(-1, "Select Kobo dictfile")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-$GroupInflex = GUICtrlCreateGroup("Generate Inflection", 440, 282, 325, 200)
+$GroupInflex = GUICtrlCreateGroup("Generate Inflection", 440, 282, 325, 242)
 $iButtonPython = GUICtrlCreateButton("Python", 446, 300, 40, 25)
 GUICtrlSetTip(-1, "Select Python.exe installed(Portable)")
 $Pyth = GUICtrlCreateEdit("Python exe", 492, 300, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
@@ -106,19 +106,25 @@ $iButtonForm = GUICtrlCreateButton("Forms", 446, 405, 40, 26)
 GUICtrlSetTip(-1, "Select wordforms")
 $WordForm = GUICtrlCreateEdit("Forms txt", 492, 406, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 GUICtrlSetTip(-1, "Download it from github.com/BorisNA/wordforms")
-$iButtonConvFlex = GUICtrlCreateButton("Convert Flex", 480, 448, 70, 25)
+$iButtonConvFlex = GUICtrlCreateButton("Convert Flex", 682, 442, 70, 25)
 GUICtrlSetTip(-1, "Generate inflection")
-$ComboInflex = GUICtrlCreateCombo("Standalone inflection", 558, 450, 140, 26)
+$ComboInflex = GUICtrlCreateCombo("Standalone inflection", 526, 444, 140, 26)
 GUICtrlSetData(-1, "Standalone inflection|Morphological dictionary|Kobo dictionary")
 GUICtrlSetTip(-1, "Select , a target dictionary to generate")
+$iButtonFscript = GUICtrlCreateButton("FScript", 446, 464, 42, 26)
+GUICtrlSetTip(-1, "Select wordform script")
+$iButtonRunS = GUICtrlCreateButton("RunS", 446, 494, 42, 22)
+GUICtrlSetTip(-1, "Run wordform script")
+$FScript = GUICtrlCreateEdit("wordform script py", 494, 478, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+GUICtrlSetTip(-1, "Download it from github.com/BorisNA/wordforms")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-$GroupConca = GUICtrlCreateGroup("Concatenate Morph dict + source Mdict", 440, 488, 325, 129)
-$iButtonMorph = GUICtrlCreateButton("Morpho dict", 457, 506, 73, 25)
+$GroupConca = GUICtrlCreateGroup("Concatenate Morph dict + source Mdict", 440, 530, 325, 92)
+$iButtonMorph = GUICtrlCreateButton("Morphо", 446, 550, 40, 26)
 GUICtrlSetTip(-1, "Select Generated Morphological dictionary")
-$Morph = GUICtrlCreateEdit("Morphological txt", 458, 536, 280, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+$Morph = GUICtrlCreateEdit("Morphological txt", 490, 550, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 GUICtrlSetTip(-1, "Path of generated 'Morphological dictionary'")
-$iButtonConca = GUICtrlCreateButton("Concatenate", 636, 576, 73, 25)
+$iButtonConca = GUICtrlCreateButton("Concatenate", 676, 588, 73, 25)
 GUICtrlSetTip(-1, "Concatenate 'Morphological dictionary' with Selected 'Source Mdict'")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -142,6 +148,7 @@ GUISetState(@SW_SHOW)
 		Local $iPIDquery = 0
 		Local $iPIDConvFlex = 0
 		Local $iPIDconcat = 0
+		Local $iPIDfscript =0
 		Local  $sDesc=0
 		Local  $sUnp=0
 		Local  $sPack=0
@@ -167,6 +174,8 @@ GUISetState(@SW_SHOW)
                 GUICtrlSetData ($Pyth, IniRead ($line&"\mdictGui_.ini", "Python", "PythonPath", ""))
 				GUICtrlSetData ($Mdict, IniRead ($line&"\mdictGui_.ini", "Mdict", "MdictPath", ""))
 				GUICtrlSetData ($flexpy, IniRead ($line&"\mdictGui_.ini", "Addflex", "addflexpy", ""))
+				GUICtrlSetData ($FScript, IniRead ($line&"\mdictGui_.ini", "FScript","FScriptpath", ""))
+
 				;-------------Label--addflex script
 				     If StringInStr(GUICtrlRead($flexpy), "addflex_mdx.py") > 0 Then
 				GUICtrlCreateLabel("           Selected 'addflex_mdx py' -> Mdict", 500, 344, 240, 17)
@@ -670,6 +679,7 @@ GUISetState(@SW_SHOW)
 				       EndIf
 				   EndIf
 			EndSelect
+
 		; Select Button InfoFlex--------------------------------29
             Select
                 Case $msg = $iButtonInfoFlex
@@ -710,7 +720,35 @@ GUISetState(@SW_SHOW)
 				MsgBox( 0, "", "Pls to restart Gui for effect.")
 				    EndIf
                   EndIf
-            EndSelect
+			EndSelect
+
+		; Select path of  Fscript ------------------------------32
+			Select
+                Case $msg = $iButtonFscript
+		        $sMessagePack = "Please select path of wordform script."
+                $Fscript1 = FileOpenDialog($sMessagePack, @desktopdir & "\", "scripts (*.py)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+	            If @error Then
+				Else
+					; Check file path for spaces.
+				If StringInStr($Fscript1, " ") > 0 Then
+				MsgBox( 0, "", "There is a space in the 'file' path, pls to select correct.")
+                Else
+                    $Fscript1 = StringReplace($Fscript1, "|", @CRLF)
+		            GUICtrlSetData($FScript, $FScript1 )
+					IniWrite ($line&"\mdictGui_.ini", "FScript", "FScriptpath", GUICtrlRead($FScript))
+                     EndIf
+                  EndIf
+			EndSelect
+
+		; Select Button_RunS-----------------------------------33
+            Select
+                Case $msg = $iButtonRunS
+			     If GUICtrlRead($FScript) = "" or $sForms=0 Then
+				   MsgBox(8192, "", "You are not chosen needed file paths")
+				 Else
+				    $iPIDfscript = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" "&GUICtrlRead($FScript)&" "&GUICtrlRead($WordForm), "", @SW_SHOWNORMAL)
+				   EndIf
+			EndSelect
 
 	WEnd
 	Run(@ComSpec & " /c taskkill /IM cmd.exe /F","",@SW_HIDE)
@@ -730,4 +768,5 @@ GUISetState(@SW_SHOW)
 	If $iPIDquery Then ProcessClose($iPIDquery)
 	If $iPIDConvFlex Then ProcessClose($iPIDConvFlex)
 	If $iPIDconcat Then ProcessClose($iPIDconcat)
+	If $iPIDfscript Then ProcessClose($iPIDfscript)
 	EndFunc   ;==========
