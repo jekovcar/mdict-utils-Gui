@@ -113,7 +113,7 @@ GUICtrlSetData(-1, "Standalone inflection|Morphological dictionary|Kobo dictiona
 GUICtrlSetTip(-1, "Select , a target dictionary to generate")
 $iButtonFscript = GUICtrlCreateButton("FScript", 446, 464, 42, 26)
 GUICtrlSetTip(-1, "Select check_wordforms script")
-$iButtonRunS = GUICtrlCreateButton("Check", 446, 494, 42, 22)
+$iButtonCheck = GUICtrlCreateButton("Check", 446, 494, 42, 22)
 GUICtrlSetTip(-1, "Check wordforms")
 $FScript = GUICtrlCreateEdit("wordform script py", 494, 478, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 GUICtrlSetTip(-1, "Download it from github.com/BorisNA/wordforms")
@@ -604,7 +604,10 @@ GUISetState(@SW_SHOW)
 		        $sMessagePack = "Please select file of WordForm."
                 $WordForm1 = FileOpenDialog($sMessagePack, @desktopdir & "\", "Forms-Lng (*.txt)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
 	            If @error Then
-	             Else
+				  Else
+				If StringInStr($WordForm1, "infl") Or StringInStr($WordForm1, "morph") > 0 Then
+				MsgBox( 0, "", "Selected WordForm may is not source, pls to select correct.")
+				  Else
                  $WordForm1 = StringReplace($WordForm1, "|", @CRLF)
 				 $Form=_WinAPI_PathRemoveExtension($WordForm1)
 		         $sForms=1
@@ -612,7 +615,8 @@ GUISetState(@SW_SHOW)
 				    ; Check file path for spaces.
 		            If StringInStr($WordForm1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
                     ;----------------------
-                  EndIf
+				    EndIf
+				EndIf
 			EndSelect
 
 		; Select Choise Combo Inflex----------------------------25
@@ -740,9 +744,9 @@ GUISetState(@SW_SHOW)
                   EndIf
 			EndSelect
 
-		; Select Button_RunS-----------------------------------33
+		; Select Button_Check-----------------------------------33
             Select
-                Case $msg = $iButtonRunS
+                Case $msg = $iButtonCheck
 			     If GUICtrlRead($FScript) = "" or $sForms=0 Then
 				   MsgBox(8192, "", "You are not chosen needed file paths")
 				 Else
