@@ -607,7 +607,7 @@ GUISetState(@SW_SHOW)
 				  Else
 				If StringInStr($WordForm1, "infl") Or StringInStr($WordForm1, "morph") > 0 Then
 				MsgBox( 0, "", "Selected WordForm may is not source, pls to select correct.")
-				  Else
+				  ElseIf StringInStr($WordForm1, "forms-") > 0 Then
                  $WordForm1 = StringReplace($WordForm1, "|", @CRLF)
 				 $Form=_WinAPI_PathRemoveExtension($WordForm1)
 		         $sForms=1
@@ -615,6 +615,8 @@ GUISetState(@SW_SHOW)
 				    ; Check file path for spaces.
 		            If StringInStr($WordForm1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
                     ;----------------------
+				  Else
+					MsgBox( 0, "", "Selected WordForm not contain 'forms-', pls to select again.")
 				    EndIf
 				EndIf
 			EndSelect
