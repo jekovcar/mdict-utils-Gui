@@ -31,21 +31,21 @@ $idButton_vers = GUICtrlCreateButton("MdictVers", 712, 86, 60, 24)
 GUICtrlSetTip(-1, "Display Mdict-utils version")
 $idButton_pypi = GUICtrlCreateButton("MdictUpd", 712, 50, 60, 24)
 GUICtrlSetTip(-1, "pypi.org/project/mdict-utils/")
-$Descr = GUICtrlCreateEdit("File Descripton", 140, 14, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+$Descr = GUICtrlCreateEdit("File Descripton", 140, 14, 260, 44, BitOR($ES_MULTILINE,$ES_READONLY))
 
-$GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 56, 393, 88)
-$idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 45, 72, 80, 22)
-$Unp = GUICtrlCreateEdit("Source Mdict", 140, 72, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
-$idButton_Pack = GUICtrlCreateButton("Make MDX", 45, 110, 80, 22)
-$idButton_PackDir = GUICtrlCreateButton("Pack All TXT", 140, 110, 80, 22)
+$GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 64, 393, 98)
+$idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 45, 82, 80, 22)
+$Unp = GUICtrlCreateEdit("Source Mdict", 140, 82, 260, 44, BitOR($ES_MULTILINE,$ES_READONLY))
+$idButton_Pack = GUICtrlCreateButton("Make MDX", 45, 133, 80, 22)
+$idButton_PackDir = GUICtrlCreateButton("Pack All TXT", 140, 133, 80, 22)
 GUICtrlSetTip(-1, "Pack MDX with many TXT files")
-$idButton_ConvSqlit = GUICtrlCreateButton("Conv TXT Sql3", 315, 110, 84, 22)
+$idButton_ConvSqlit = GUICtrlCreateButton("Conv TXT Sql3", 315, 133, 84, 22)
 GUICtrlSetTip(-1, "Convert TXT to sqlite3 DB")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupUnPackMDX = GUICtrlCreateGroup("UnPack MDX", 25, 166, 435, 100)
-$idButton_BrowsePack = GUICtrlCreateButton("File MDX/MDD", 45, 192, 84, 22)
-$Pack = GUICtrlCreateEdit("File MDX or MDD", 134, 192, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+$idButton_BrowsePack = GUICtrlCreateButton("File MDX/MDD", 45, 182, 84, 22)
+$Pack = GUICtrlCreateEdit("File MDX or MDD", 134, 182, 260, 44, BitOR($ES_MULTILINE,$ES_READONLY))
 $idButton_UnPack = GUICtrlCreateButton("Unpack MDX", 44, 232, 80, 22)
 $idButton_UnpMDX_DBzip = GUICtrlCreateButton("UnpFile DBzip", 224, 232, 84, 22)
 GUICtrlSetTip(-1, "Unpack MDX/MDD to sqlite3 DB with zip compress")
@@ -62,15 +62,15 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupPackMDD = GUICtrlCreateGroup("Pack MDD", 29, 282, 393, 80)
 $idButton_BrowseDir = GUICtrlCreateButton("Folder MDD", 45, 300, 80, 22)
-$UnpMDD = GUICtrlCreateEdit("Dir MDD", 134, 300, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+$UnpMDD = GUICtrlCreateEdit("Dir MDD", 134, 302, 260, 44, BitOR($ES_MULTILINE,$ES_READONLY))
 $idButton_PackMDD = GUICtrlCreateButton("Make MDD", 45, 329, 80, 22)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-$GroupUnPackMDD = GUICtrlCreateGroup("UnPack MDD / Convert Sqlite3DB to TXT", 30, 384, 393, 97)
-$idButton_BrowseMDD = GUICtrlCreateButton("Select File", 45, 410, 80, 22)
-$idButton_UnMDD = GUICtrlCreateButton("Unpack MDD", 45, 450, 80, 22)
-$PackMDD = GUICtrlCreateEdit("File MDD or DB", 139, 410, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
-$idButton_UnpSqlite3 = GUICtrlCreateButton("Conv Sql3 TXT", 315, 450, 84, 22)
+$GroupUnPackMDD = GUICtrlCreateGroup("UnPack MDD / Convert Sqlite3DB to TXT", 30, 374, 393, 113)
+$idButton_BrowseMDD = GUICtrlCreateButton("Select File", 45, 400, 80, 22)
+$idButton_UnMDD = GUICtrlCreateButton("Unpack MDD", 45, 454, 80, 22)
+$PackMDD = GUICtrlCreateEdit("File MDD or DB", 139, 400, 260, 44, BitOR($ES_MULTILINE,$ES_READONLY))
+$idButton_UnpSqlite3 = GUICtrlCreateButton("Conv Sql3 TXT", 315, 454, 84, 22)
 GUICtrlSetTip(-1, "Convert sqlite3 DB to TXT")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -198,7 +198,7 @@ GUISetState(@SW_SHOW)
             If MsgBox(262209,"Check Mdict-utils","'mdict.exe' doesn't exist. Mdict section won't work." & @CRLF & @CRLF & _
            "Pls visit, " & "github/liuyug/mdict-utils" & @CRLF & _
            "to download last 'mdict-windows'.") = 1 Then ShellExecute("https://github.com/liuyug/mdict-utils/releases")
-                GUICtrlCreateLabel("'mdict-utils' does not exist. Mdict section won't work", 108, 148, 309, 20)
+                GUICtrlCreateLabel("'mdict-utils' does not exist. Mdict section won't work", 108, 160, 309, 20)
 				GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
                 GUICtrlSetBkColor(-1, 0xFFFF00)
 				Else
@@ -223,18 +223,21 @@ GUISetState(@SW_SHOW)
 					MsgBox(8192, "", "Error: Could not obtain the file encoding.")
 			ElseIf Not($iEncoding =256) + ($iEncoding =128) Then
 					If MsgBox(1, "File Description","Selected Description is not UTF 8 :" & @CRLF & $Descr1& @CRLF _
-						& @CRLF &"Do you want to edit & save(UTF-8) it in notepad ?")= 1 Then
+						& @CRLF &"Do you want to edit (save in UTF-8) it in 'Notepad' ?")= 1 Then
 					Run ( "notepad.exe " & $Descr1, @WindowsDir, @SW_SHOWNORMAL )
 					EndIf
 						Else
-					If MsgBox(257, "File Description","Selected Description is OK :" & @CRLF & $Descr1& @CRLF _
-						& @CRLF &"Do you want to prewiev (edit) in notepad and select a Description again?")= 1 Then
-					Run ( "notepad.exe " & $Descr1, @WindowsDir, @SW_SHOWNORMAL )
-					Else
-		        $sDesc=1
-				GUICtrlSetData($Descr, $Descr1)
-				  EndIf
-				EndIf
+                        If FileGetSize($Descr1)>1026 Then
+						     If MsgBox(257, "File Description","Selected file : "& $Descr1& @CRLF & @CRLF _
+						&"is too large for 'Description', recommended size <1 KB" & @CRLF _
+						&"OK to edit it in 'Notepad' or continue with selected ?")= 1 Then
+					    Run ( "notepad.exe " & $Descr1, @WindowsDir, @SW_SHOWNORMAL )
+						     Else
+                          $sDesc=1
+				          GUICtrlSetData($Descr, $Descr1)
+						    EndIf
+				        EndIf
+                    EndIf
 					; Check file path for spaces.
 		            If StringInStr($Descr1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
 					;----------------------
