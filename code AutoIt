@@ -3,7 +3,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.8.9
+#AutoIt3Wrapper_Res_Fileversion=0.9.0
 #AutoIt3Wrapper_Res_ProductName=mdictGui
 #AutoIt3Wrapper_Res_ProductVersion=0.8.9
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
@@ -18,7 +18,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.8.9", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.9.0", 792, 641, 192, 125)
 
 $iButtonMdict = GUICtrlCreateButton("Mdict", 456, 24, 65, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
@@ -222,10 +222,18 @@ GUISetState(@SW_SHOW)
 			If @error Then
 					MsgBox(8192, "", "Error: Could not obtain the file encoding.")
 			ElseIf Not($iEncoding =256) + ($iEncoding =128) Then
-		            MsgBox(8192, "", "You selected file Description:" & @CRLF & $Descr1& @CRLF & @CRLF &"    Description is not UTF 8 !")
-				Else
+					If MsgBox(1, "File Description","Selected Description is not UTF 8 :" & @CRLF & $Descr1& @CRLF _
+						& @CRLF &"Do you want to edit & save(UTF-8) it in notepad ?")= 1 Then
+					Run ( "notepad.exe " & $Descr1, @WindowsDir, @SW_SHOWNORMAL )
+					EndIf
+						Else
+					If MsgBox(257, "File Description","Selected Description is OK :" & @CRLF & $Descr1& @CRLF _
+						& @CRLF &"Do you want to prewiev (edit) in notepad and select a Description again?")= 1 Then
+					Run ( "notepad.exe " & $Descr1, @WindowsDir, @SW_SHOWNORMAL )
+					Else
 		        $sDesc=1
 				GUICtrlSetData($Descr, $Descr1)
+				  EndIf
 				EndIf
 					; Check file path for spaces.
 		            If StringInStr($Descr1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
