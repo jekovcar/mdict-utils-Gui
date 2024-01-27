@@ -3,9 +3,9 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.9.0
+#AutoIt3Wrapper_Res_Fileversion=0.9.2
 #AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.8.9
+#AutoIt3Wrapper_Res_ProductVersion=0.9.2
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
@@ -18,68 +18,73 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.9.0", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.9.2", 792, 641, 192, 125)
 
 $iButtonMdict = GUICtrlCreateButton("Mdict", 456, 24, 65, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
 $Mdict = GUICtrlCreateEdit("", 454, 61, 244, 48, BitOR($ES_MULTILINE,$ES_READONLY))
-GUICtrlSetTip(-1, "Path of mdict-utils ")
-$idButton_Descr = GUICtrlCreateButton("Descripton", 45, 18, 80, 22)
+GUICtrlSetTip(-1, "Path of mdict-utils")
+$idButton_Descr = GUICtrlCreateButton("Descripton", 45, 74, 80, 22)
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 712, 16, 60, 24)
 GUICtrlSetTip(-1, "GitHub mdictGui")
 $idButton_vers = GUICtrlCreateButton("MdictVers", 712, 86, 60, 24)
 GUICtrlSetTip(-1, "Display Mdict-utils version")
 $idButton_pypi = GUICtrlCreateButton("MdictUpd", 712, 50, 60, 24)
 GUICtrlSetTip(-1, "pypi.org/project/mdict-utils/")
-$Descr = GUICtrlCreateEdit("File Descripton", 140, 14, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
+$Descr = GUICtrlCreateEdit("File Descripton", 134, 64, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
+$Title = GUICtrlCreateEdit("File Title", 134, 11, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
+$iButtonTitle = GUICtrlCreateButton("Title", 45, 26, 80, 22)
 
-$GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 64, 393, 98)
-$idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 45, 82, 80, 22)
-$Unp = GUICtrlCreateEdit("Source Mdict", 140, 82, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
-$idButton_Pack = GUICtrlCreateButton("Make MDX", 45, 133, 80, 22)
-$idButton_PackDir = GUICtrlCreateButton("Pack All TXT", 140, 133, 80, 22)
+$GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 112, 393, 98)
+$idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 45, 130, 80, 22)
+$Unp = GUICtrlCreateEdit("Source Mdict", 134, 130, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
+$idButton_Pack = GUICtrlCreateButton("Make MDX", 45, 181, 80, 22)
+$idButton_PackDir = GUICtrlCreateButton("Pack All TXT", 140, 181, 80, 22)
 GUICtrlSetTip(-1, "Pack MDX with many TXT files")
-$idButton_ConvSqlit = GUICtrlCreateButton("Conv TXT Sql3", 315, 133, 84, 22)
+$idButton_ConvSqlit = GUICtrlCreateButton("Conv TXT Sql3", 315, 181, 84, 22)
 GUICtrlSetTip(-1, "Convert TXT to sqlite3 DB")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-$GroupUnPackMDX = GUICtrlCreateGroup("UnPack MDX", 25, 166, 435, 100)
-$idButton_BrowsePack = GUICtrlCreateButton("File MDX/MDD", 45, 182, 84, 22)
-$Pack = GUICtrlCreateEdit("File MDX or MDD", 134, 182, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
-$idButton_UnPack = GUICtrlCreateButton("Unpack MDX", 44, 232, 80, 22)
-$idButton_UnpMDX_DBzip = GUICtrlCreateButton("UnpFile DBzip", 224, 232, 84, 22)
+$GroupUnPackMDX = GUICtrlCreateGroup("UnPack MDX", 25, 214, 395, 104)
+$idButton_BrowsePack = GUICtrlCreateButton("FileMDX/MDD", 45, 230, 80, 22)
+$Pack = GUICtrlCreateEdit("File MDX or MDD", 134, 230, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
+$idButton_UnPack = GUICtrlCreateButton("Unpack MDX", 45, 258, 80, 22)
+$idButton_UnpMDX_DBzip = GUICtrlCreateButton("UnpFile DBzip", 136, 286, 84, 22)
 GUICtrlSetTip(-1, "Unpack MDX/MDD to sqlite3 DB with zip compress")
-$idButton_Meta = GUICtrlCreateButton("MetaInfo", 400, 192, 50, 22)
+$idButton_Meta = GUICtrlCreateButton("MetaInfo", 360, 286, 50, 22)
 GUICtrlSetTip(-1, "Meta information of MDX/MDD")
-$idButton_UnpMDX_DB = GUICtrlCreateButton("UnpFile DB", 133, 232, 80, 22)
+$idButton_UnpMDX_DB = GUICtrlCreateButton("UnpFile DB", 45, 286, 80, 22)
 GUICtrlSetTip(-1, "Unpack MDX/MDD to sqlite3 DB")
-$idButton_UnpSplit = GUICtrlCreateButton("UnpFile Split", 315, 232, 80, 22)
+$idButton_UnpSplit = GUICtrlCreateButton("UnpFile Split", 227, 286, 80, 22)
 GUICtrlSetTip(-1, "Unpack MDX/MDD into 'az/n' parts.")
-$ComboSplit = GUICtrlCreateCombo("0", 400, 232, 40, 22)
-GUICtrlSetData($ComboSplit, "az|2|3|4|5|6|7|8|9|10", "0")
-GUICtrlSetTip(-1, "Select az(a...z), 2-10 parts of split")
+$ComboSplit = GUICtrlCreateCombo("0", 312, 286, 40, 25)
+GUICtrlSetData(-1, "az|2|3|4|5|6|7|8|9|10")
+GUICtrlSetTip(-1, "Select , 2-10 parts of split")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-$GroupPackMDD = GUICtrlCreateGroup("Pack MDD", 29, 282, 393, 80)
-$idButton_BrowseDir = GUICtrlCreateButton("Folder MDD", 45, 300, 80, 22)
-$UnpMDD = GUICtrlCreateEdit("Dir MDD", 134, 302, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
-$idButton_PackMDD = GUICtrlCreateButton("Make MDD", 45, 329, 80, 22)
+$GroupPackMDD = GUICtrlCreateGroup("Pack MDD", 29, 322, 393, 80)
+$idButton_BrowseDir = GUICtrlCreateButton("Folder MDD", 45, 340, 80, 22)
+$UnpMDD = GUICtrlCreateEdit("Dir MDD", 134, 342, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
+$idButton_PackMDD = GUICtrlCreateButton("Make MDD", 45, 369, 80, 22)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-$GroupUnPackMDD = GUICtrlCreateGroup("UnPack MDD / Convert Sqlite3DB to TXT", 30, 374, 393, 113)
-$idButton_BrowseMDD = GUICtrlCreateButton("Select File", 45, 400, 80, 22)
-$idButton_UnMDD = GUICtrlCreateButton("Unpack MDD", 45, 454, 80, 22)
-$PackMDD = GUICtrlCreateEdit("File MDD or DB", 139, 400, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
-$idButton_UnpSqlite3 = GUICtrlCreateButton("Conv Sql3 TXT", 315, 454, 84, 22)
+$GroupUnPackMDD = GUICtrlCreateGroup("UnPack MDD / Convert Sqlite3DB to TXT", 30, 414, 393, 113)
+$idButton_BrowseMDD = GUICtrlCreateButton("Select File", 45, 440, 80, 22)
+$idButton_UnMDD = GUICtrlCreateButton("Unpack MDD", 45, 494, 80, 22)
+$PackMDD = GUICtrlCreateEdit("File MDD or DB", 134, 440, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
+$idButton_UnpSqlite3 = GUICtrlCreateButton("Conv Sql3 TXT", 315, 494, 84, 22)
 GUICtrlSetTip(-1, "Convert sqlite3 DB to TXT")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-$GroupQuery = GUICtrlCreateGroup("Search in MDX dict", 30, 498, 393, 89)
-$idButton_key = GUICtrlCreateButton("Query key", 45, 524, 80, 22)
-$inp_word = GUICtrlCreateInput("", 139, 524, 260, 21)
-GUICtrlSetTip(-1, "Only used to test whether dictionary packaging is correct." & @CRLF & "只用于测试词典打包是否正确。")
-GUICtrlCreateLabel("Enter <WORD> to request the key. Empty for all key list", 139, 550, 282, 20)
+$GroupQuery = GUICtrlCreateGroup("Search in MDX dict", 30, 530, 393, 89)
+$idButton_key = GUICtrlCreateButton("Query key", 45, 556, 80, 22)
+$inp_word = GUICtrlCreateInput("", 134, 556, 260, 21)
+GUICtrlSetTip(-1, "Only used to test whether dictionary packaging is correct.%CRLF%只用于测试词典打包是否正确。")
+GUICtrlCreateLabel("Enter <WORD> to request the key. Empty for all key list", 134, 582, 282, 20)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+GUICtrlCreateLabel("MORPHOLOGY ,", 510, 144, 268, 17)
+GUICtrlSetTip(-1, "Section Generate for Mdict , StarDict  Kobo dictfile")
 
 GUICtrlCreateLabel("MORPHOLOGY , INFLECTIONS ( HOMONYMS )", 510, 144, 268, 17)
 GUICtrlSetTip(-1, "Section Generate for Mdict , StarDict & Kobo dictfile")
@@ -128,7 +133,7 @@ $iButtonConca = GUICtrlCreateButton("Concatenate", 676, 588, 73, 25)
 GUICtrlSetTip(-1, "Concatenate 'Morphological dictionary' with Selected 'Source Mdict'")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-GUICtrlCreateLabel("All files must be UTF-8 encoding, include HTML and TXT", 65, 595, 350, 20)
+GUICtrlCreateLabel("All files must be UTF-8 encoding, include HTML and TXT", 65, 610, 350, 20)
 GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
 GUICtrlSetColor(-1, 0x0000FF)
 
@@ -150,6 +155,7 @@ GUISetState(@SW_SHOW)
 		Local $iPIDconcat = 0
 		Local $iPIDfscript =0
 		Local  $sDesc=0
+		Local  $sTit=0
 		Local  $sUnp=0
 		Local  $sPack=0
 		Local  $sUnMDD=0
@@ -288,18 +294,32 @@ GUISetState(@SW_SHOW)
                 Case $msg = $idButton_Pack
 				   If $sUnp = 0 Then
 				   MsgBox(8192, "", "You are not chosen Mdict source")
-			    Else
-				  If $sDesc = 0 Then
-                      If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($Unp)&""& @CRLF & _
-				   "will be pack without Description as:"&$Un_&".mdx") = 1 Then
+				   Else
+				If $sTit=0 Then
+				    If $sDesc = 0 Then
+                        If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($Unp)&""& @CRLF & _
+				   "will be pack without Description as:"& @CRLF &$Un_&".mdx") = 1 Then
 				   $iPIDPack = Run(GUICtrlRead($Mdict)&" -a "&GUICtrlRead($Unp)&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
-				   EndIf
-				Else
-				   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF _
-				   & ""&GUICtrlRead($Unp)&""& @CRLF &"will be pack as:"&$Un_&".mdx") = 1 Then
+						EndIf
+					Else
+						If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF _
+				   & ""&GUICtrlRead($Unp)&""& @CRLF &"will be pack as:"& @CRLF &$Un_&".mdx") = 1 Then
 				   $iPIDPack = Run(GUICtrlRead($Mdict)&" --description "&GUICtrlRead($Descr)&" -a "&GUICtrlRead($Unp)&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
-				           EndIf
-		               EndIf
+						EndIf
+					EndIf
+				Else
+				    If $sDesc = 0 Then
+                        If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($Unp)&""& @CRLF & _
+				   "with Title will be pack without Description as:"& @CRLF &$Un_&".mdx") = 1 Then
+				   $iPIDPack = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" -a "&GUICtrlRead($Unp)&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+						EndIf
+					Else
+				        If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF _
+				   & ""&GUICtrlRead($Unp)&""& @CRLF &"with Title will be pack as:"& @CRLF &$Un_&".mdx") = 1 Then
+				   $iPIDPack = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" --description "&GUICtrlRead($Descr)&" -a "&GUICtrlRead($Unp)&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+						EndIf
+					EndIf
+				EndIf
 			       EndIf
 			EndSelect
 
@@ -369,18 +389,31 @@ GUISetState(@SW_SHOW)
                 Case $msg = $idButton_PackMDD
 				 If $sUnMDD = 0 Then
 				   MsgBox(8192, "", "You are not chosen MDD source")
-			    Else
+				 Else
+			  If $sTit=0 Then
 				  If $sDesc = 0 Then
                    If MsgBox(1, "Your choice","You choose MDD source:"& @CRLF & ""&GUICtrlRead($UnpMDD)&""& @CRLF _
 					&"will be pack without Description as:"& @CRLF &GUICtrlRead($UnpMDD)&".mdd") =1 Then
 				   $iPIDPackMDD = Run(GUICtrlRead($Mdict)&" -a "&GUICtrlRead($UnpMDD)&" "&GUICtrlRead($UnpMDD)&".mdd", "", @SW_SHOWNORMAL)
 				   EndIf
 				 Else
-				   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($UnpMDD)&""& @CRLF &"will be pack as:"&GUICtrlRead($UnpMDD)&".mdd")=1 Then
+				   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($UnpMDD)&""& @CRLF &"will be pack as:"& @CRLF &GUICtrlRead($UnpMDD)&".mdd")=1 Then
 				   $iPIDPackMDD = Run(GUICtrlRead($Mdict)&" --description "&GUICtrlRead($Descr)&" -a "&GUICtrlRead($UnpMDD)&" "&GUICtrlRead($UnpMDD)&".mdd", "", @SW_SHOWNORMAL)
 				         EndIf
-		              EndIf
+				    EndIf
+			  Else
+				  If $sDesc = 0 Then
+                   If MsgBox(1, "Your choice","You choose MDD source:"& @CRLF & ""&GUICtrlRead($UnpMDD)&""& @CRLF _
+					&"with Title will be pack without Description as:"& @CRLF &GUICtrlRead($UnpMDD)&".mdd") =1 Then
+				   $iPIDPackMDD = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" -a "&GUICtrlRead($UnpMDD)&" "&GUICtrlRead($UnpMDD)&".mdd", "", @SW_SHOWNORMAL)
 				   EndIf
+				 Else
+				   If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($UnpMDD)&""& @CRLF &"with Title will be pack as:"& @CRLF &GUICtrlRead($UnpMDD)&".mdd")=1 Then
+				   $iPIDPackMDD = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" --description "&GUICtrlRead($Descr)&" -a "&GUICtrlRead($UnpMDD)&" "&GUICtrlRead($UnpMDD)&".mdd", "", @SW_SHOWNORMAL)
+				         EndIf
+		              EndIf
+			  EndIf
+			         EndIf
 			EndSelect
 
 		; Select Button_UnPack MDD-------------------------------11
@@ -425,19 +458,33 @@ GUISetState(@SW_SHOW)
                 Case $msg = $idButton_PackDir
 				 If $sUnp = 0 Then
 				   MsgBox(8192, "", "You are not chosen at last one Mdict source")
-			  Else
-				 If $sDesc = 0 Then
+				 Else
+		    If $sTit=0 Then
+				If $sDesc = 0 Then
                    If MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
 				   & "all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\All.mdx")=1 Then
 			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" -a "&$UnpDir&" "&$UnpDir&"\All.mdx", "", @SW_SHOWNORMAL)
-			       EndIf
-				Else
+			           EndIf
+				   Else
 		           if MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
 				   &"all TXT will be pack as :"& @CRLF&$UnpDir&"\All_descr.mdx")=1 Then
 			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
+				   EndIf
+				EndIf
+			Else
+				   				 If $sDesc = 0 Then
+                   If MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
+				   & "with Title all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\All.mdx")=1 Then
+			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" -a "&$UnpDir&" "&$UnpDir&"\All.mdx", "", @SW_SHOWNORMAL)
+			          EndIf
+				   Else
+		           if MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
+				   &"with Title all TXT will be pack as :"& @CRLF&$UnpDir&"\All_descr.mdx")=1 Then
+			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
 			           EndIf
-		             EndIf
-			       EndIf
+					EndIf
+			EndIf
+				  EndIf
 		    EndSelect
 
 		; Select Button_UnPackMDX/MDD to DB-------------------------15
@@ -768,6 +815,44 @@ GUISetState(@SW_SHOW)
 				 Else
 				    $iPIDfscript = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" "&GUICtrlRead($FScript)&" "&GUICtrlRead($WordForm), "", @SW_SHOWNORMAL)
 				   EndIf
+			EndSelect
+
+		; Select File Title------------------------------------34
+			Select
+				Case $msg = $iButtonTitle
+                    $sMessageDescr = "Please select a Title."
+					$Title1 = FileOpenDialog($sMessageDescr, @desktopdir & "\", "Title File (*.*)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
+               If @error Then
+			Else
+                   $Title1 = StringReplace($Title1, "|", @CRLF)
+		; Check file is encoding of UTF
+		          Local $iEncoding = FileGetEncoding($Title1) ; Retrieve the file encoding of the current script.
+			If @error Then
+					MsgBox(8192, "", "Error: Could not obtain the file encoding.")
+			ElseIf Not($iEncoding =256) + ($iEncoding =128) Then
+					If MsgBox(1, "File Title","Selected Title is not UTF 8 :" & @CRLF & $Title1& @CRLF _
+						& @CRLF &"Do you want to edit (save in UTF-8) it in 'Notepad' ?")= 1 Then
+					Run ( "notepad.exe " & $Title1, @WindowsDir, @SW_SHOWNORMAL )
+					   EndIf
+				Else
+					If FileGetSize($Title1)>50 Then
+						If MsgBox(257, "File Title","Selected file : "& $Title1& @CRLF & @CRLF _
+						&"is too large for 'Title', recommended size <50 bytes" & @CRLF _
+						&"OK to edit it in 'Notepad' or continue with selected ?")= 1 Then
+					    Run ( "notepad.exe " & $Title1, @WindowsDir, @SW_SHOWNORMAL )
+					Else
+		        $sDesc=1
+				GUICtrlSetData($Title, $Title1)
+						EndIf
+					Else
+				$sTit=1
+				GUICtrlSetData($Title, $Title1)
+					EndIf
+					    EndIf
+					; Check file path for spaces.
+		            If StringInStr($Title1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
+					;----------------------
+					EndIf
 			EndSelect
 
 	WEnd
