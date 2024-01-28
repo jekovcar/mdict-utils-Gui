@@ -233,9 +233,9 @@ GUISetState(@SW_SHOW)
 					Run ( "notepad.exe " & $Descr1, @WindowsDir, @SW_SHOWNORMAL )
 					   EndIf
 				Else
-					If FileGetSize($Descr1)>1026 Then
+					If FileGetSize($Descr1)>2048 Then
 						If MsgBox(257, "File Description","Selected file : "& $Descr1& @CRLF & @CRLF _
-						&"is too large for 'Description', recommended size <1 KB" & @CRLF _
+						&"is too large for 'Description', recommended size <2 KB" & @CRLF _
 						&"OK to edit it in 'Notepad' or continue with selected ?")= 1 Then
 					    Run ( "notepad.exe " & $Descr1, @WindowsDir, @SW_SHOWNORMAL )
 					Else
@@ -835,13 +835,13 @@ GUISetState(@SW_SHOW)
 					Run ( "notepad.exe " & $Title1, @WindowsDir, @SW_SHOWNORMAL )
 					   EndIf
 				Else
-					If FileGetSize($Title1)>50 Then
+					If FileGetSize($Title1)>100 Then
 						If MsgBox(257, "File Title","Selected file : "& $Title1& @CRLF & @CRLF _
-						&"is too large for 'Title', recommended size <50 bytes" & @CRLF _
+						&"is too large for 'Title', recommended size <100 bytes" & @CRLF _
 						&"OK to edit it in 'Notepad' or continue with selected ?")= 1 Then
 					    Run ( "notepad.exe " & $Title1, @WindowsDir, @SW_SHOWNORMAL )
 					Else
-		        $sDesc=1
+		        $sTit=1
 				GUICtrlSetData($Title, $Title1)
 						EndIf
 					Else
