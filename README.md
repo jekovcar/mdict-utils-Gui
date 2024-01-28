@@ -1,7 +1,7 @@
 # Use mdict-utils-Gui
-Windows graphic user interface for mdict-utils
+mdictGui is Windows graphic user interface for mdict-utils
 It can be use with mdict-windows<br>(https://github.com/liuyug/mdict-utils)<br>
-or berrer with created a Python\Scripts\mdict.exe file, when install 'mdict-utils' as:<br>
+or better, with created a Python\Scripts\mdict.exe file, when install 'mdict-utils' as:<br>
 python -m pip install mdict utils-py3-none-any.whl (https://pypi.org/project/mdict-utils/)<br>
 in Python for Windows (https://www.python.org/downloads/)<br>
 or in Portable Python for Windows (https://sourceforge.net/projects/portable-python/files/)
