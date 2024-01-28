@@ -3,9 +3,9 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.9.2
+#AutoIt3Wrapper_Res_Fileversion=0.9.3
 #AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.9.2
+#AutoIt3Wrapper_Res_ProductVersion=0.9.3
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
@@ -18,17 +18,17 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.9.2", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.9.3", 792, 641, 192, 125)
 
-$iButtonMdict = GUICtrlCreateButton("Mdict", 456, 24, 65, 25)
+$iButtonMdict = GUICtrlCreateButton("Mdict", 406, 74, 45, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
-$Mdict = GUICtrlCreateEdit("", 454, 61, 244, 48, BitOR($ES_MULTILINE,$ES_READONLY))
+$Mdict = GUICtrlCreateEdit("", 454, 64, 244, 48, BitOR($ES_MULTILINE,$ES_READONLY))
 GUICtrlSetTip(-1, "Path of mdict-utils")
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 74, 80, 22)
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 712, 16, 60, 24)
 GUICtrlSetTip(-1, "GitHub mdictGui")
 $idButton_vers = GUICtrlCreateButton("MdictVers", 712, 86, 60, 24)
-GUICtrlSetTip(-1, "Display Mdict-utils version")
+GUICtrlSetTip(-1, "Display Mdict-utils & Python versions")
 $idButton_pypi = GUICtrlCreateButton("MdictUpd", 712, 50, 60, 24)
 GUICtrlSetTip(-1, "pypi.org/project/mdict-utils/")
 $Descr = GUICtrlCreateEdit("File Descripton", 134, 64, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
@@ -347,9 +347,10 @@ GUISetState(@SW_SHOW)
 
 		; Select Button_Mdict_version------------------------7
            Select
-                Case $msg = $idButton_vers
-                   Run("cmd /c",@SW_SHOW)
+			   Case $msg = $idButton_vers
+				   $iPIDvers = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" --version", "", @SW_SHOWNORMAL)
 				   $iPIDvers = Run(@ComSpec & " /k "&GUICtrlRead($Mdict)&" --version", "", @SW_SHOWNORMAL)
+
 			EndSelect
 
 		; Select  Folder MDD----------------------------------8
@@ -616,7 +617,7 @@ GUISetState(@SW_SHOW)
 
 		; Select path of  PYTHON ------------------------------22
 			Select
-                Case $msg = $iButtonPython
+				Case $msg = $iButtonPython
 		        $sMessagePack = "Please select path of PYTHON."
                 $Pyth1 = FileOpenDialog($sMessagePack, @desktopdir & "\", "python (python.exe)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
 	            If @error Then
