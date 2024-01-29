@@ -3,9 +3,9 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.9.3
+#AutoIt3Wrapper_Res_Fileversion=0.9.4
 #AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.9.3
+#AutoIt3Wrapper_Res_ProductVersion=0.9.4
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
@@ -18,7 +18,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.9.3", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.9.4", 792, 641, 192, 125)
 
 $iButtonMdict = GUICtrlCreateButton("Mdict", 406, 74, 45, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
@@ -143,7 +143,8 @@ GUISetState(@SW_SHOW)
 		Local $iPIDPackMDD = 0
 	    Local $iPIDUnMDD = 0
 		Local $iPIDMeta =0
-		Local $iPIDvers =0
+		Local $iPIDversPyth =0
+		Local $iPIDversMdict =0
 		Local $iPIDconv_db = 0
 		Local $iPIDUn_db = 0
 		Local $iPIDPack_all = 0
@@ -348,10 +349,17 @@ GUISetState(@SW_SHOW)
 		; Select Button_Mdict_version------------------------7
            Select
 			   Case $msg = $idButton_vers
-				   $iPIDvers = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" --version", "", @SW_SHOWNORMAL)
-				   $iPIDvers = Run(@ComSpec & " /k "&GUICtrlRead($Mdict)&" --version", "", @SW_SHOWNORMAL)
-
-			EndSelect
+				   $iPIDversMdict = Run(@ComSpec & " /k "&GUICtrlRead($Mdict)&" --version", "", @SW_HIDE, $STDOUT_CHILD+$STDERR_CHILD)
+				   $iPIDversPyth = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" --version", "", @SW_HIDE, $STDOUT_CHILD+$STDERR_CHILD)
+                  Local $ResponsePyth
+                 Local $ResponseMdict
+                While 1
+				$ResponsePyth &= StdoutRead($iPIDversPyth)
+				$ResponseMdict &= StdoutRead($iPIDversMdict)
+                  If @error Then ExitLoop
+				Wend
+                  MsgBox(0, "Check Versions","====> " &$ResponseMdict& @CRLF & @CRLF & "====> " & $ResponsePyth)
+            EndSelect
 
 		; Select  Folder MDD----------------------------------8
 			Select
@@ -864,7 +872,8 @@ GUISetState(@SW_SHOW)
 	If $iPIDPackMDD  Then ProcessClose($iPIDPackMDD )
 	If $iPIDUnMDD Then ProcessClose($iPIDUnMDD)
 	If $iPIDMeta Then ProcessClose($iPIDMeta)
-	If $iPIDvers Then ProcessClose($iPIDvers)
+	If $iPIDversPyth Then ProcessClose($iPIDversPyth)
+	If $iPIDversMdict Then ProcessClose($iPIDversMdict)
 	If $iPIDconv_db Then ProcessClose($iPIDconv_db)
 	If $iPIDUn_db Then ProcessClose($iPIDUn_db)
 	If $iPIDPack_all Then ProcessClose($iPIDPack_all)
