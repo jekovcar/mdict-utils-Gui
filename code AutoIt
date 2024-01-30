@@ -354,11 +354,14 @@ GUISetState(@SW_SHOW)
                   Local $ResponsePyth
                  Local $ResponseMdict
                 While 1
-				$ResponsePyth &= StdoutRead($iPIDversPyth)
-				$ResponseMdict &= StdoutRead($iPIDversMdict)
+				    $ResponsePyth &= StdoutRead($iPIDversPyth)
+				    $ResponseMdict &= StdoutRead($iPIDversMdict)
                   If @error Then ExitLoop
 				Wend
                   MsgBox(0, "Check Versions","====> " &$ResponseMdict& @CRLF & @CRLF & "====> " & $ResponsePyth)
+					$ResponsePyth = ""
+				    $ResponseMdict = ""
+
             EndSelect
 
 		; Select  Folder MDD----------------------------------8
