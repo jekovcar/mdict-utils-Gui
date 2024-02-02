@@ -3,9 +3,9 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.9.4
+#AutoIt3Wrapper_Res_Fileversion=0.9.5
 #AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.9.4
+#AutoIt3Wrapper_Res_ProductVersion=0.9.5
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
@@ -18,13 +18,16 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.9.4", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.9.5", 792, 641, 192, 125)
 
 $iButtonMdict = GUICtrlCreateButton("Mdict", 406, 74, 45, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
 $Mdict = GUICtrlCreateEdit("", 454, 64, 244, 48, BitOR($ES_MULTILINE,$ES_READONLY))
 GUICtrlSetTip(-1, "Path of mdict-utils")
-$idButton_Descr = GUICtrlCreateButton("Descripton", 45, 74, 80, 22)
+$idButton_Descr = GUICtrlCreateButton("Descripton", 45, 64, 80, 22)
+$ButtonDview = GUICtrlCreateButton("View", 92, 88, 33, 20)
+GUICtrlSetBkColor(-1, 0xFFFBF0)
+GUICtrlSetTip(-1, "Edit Descripton")
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 712, 16, 60, 24)
 GUICtrlSetTip(-1, "GitHub mdictGui")
 $idButton_vers = GUICtrlCreateButton("MdictVers", 712, 86, 60, 24)
@@ -33,7 +36,10 @@ $idButton_pypi = GUICtrlCreateButton("MdictUpd", 712, 50, 60, 24)
 GUICtrlSetTip(-1, "pypi.org/project/mdict-utils/")
 $Descr = GUICtrlCreateEdit("File Descripton", 134, 64, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
 $Title = GUICtrlCreateEdit("File Title", 134, 11, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
-$iButtonTitle = GUICtrlCreateButton("Title", 45, 26, 80, 22)
+$iButtonTitle = GUICtrlCreateButton("Title", 45, 12, 80, 22)
+$ButtonTview = GUICtrlCreateButton("View", 92, 36, 33, 20)
+GUICtrlSetBkColor(-1, 0xFFFBF0)
+GUICtrlSetTip(-1, "Edit Title")
 
 $GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 112, 393, 98)
 $idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 45, 130, 80, 22)
@@ -361,8 +367,7 @@ GUISetState(@SW_SHOW)
 					$ResponsePyth = StringReplace($ResponsePyth, @WorkingDir&">", "")
                   MsgBox(0, "Check Versions","Mdict ===> " &$ResponseMdict& "Python ==> " & $ResponsePyth)
 					  Global $ResponsePyth = "" , $ResponseMdict = ""
-
-            EndSelect
+			EndSelect
 
 		; Select  Folder MDD----------------------------------8
 			Select
@@ -865,6 +870,24 @@ GUISetState(@SW_SHOW)
 		            If StringInStr($Title1, " ") > 0 Then MsgBox( 0, "", "There is a space in the 'file' path and it may not work properly.")
 					;----------------------
 					EndIf
+			EndSelect
+
+					; Button_Title View-----------------------------35
+           Select
+			   Case $msg = $ButtonTview
+				   If $sTit=1 Then
+					Run ( "notepad.exe " & GUICtrlRead($Title), @WindowsDir, @SW_SHOWNORMAL )
+				       Else
+                    EndIf
+		   EndSelect
+
+					;  Button_Description View----------------------36
+           Select
+			   Case $msg = $ButtonDview
+				   If $sDesc=1 Then
+					Run ( "notepad.exe " & GUICtrlRead($Descr), @WindowsDir, @SW_SHOWNORMAL )
+				       Else
+                    EndIf
 			EndSelect
 
 	WEnd
