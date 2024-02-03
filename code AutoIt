@@ -27,6 +27,7 @@ GUICtrlSetTip(-1, "Path of mdict-utils")
 $idButton_Descr = GUICtrlCreateButton("Descripton", 45, 64, 80, 22)
 $ButtonDview = GUICtrlCreateButton("View", 92, 88, 33, 20)
 GUICtrlSetBkColor(-1, 0xFFFBF0)
+GUICtrlSetState($ButtonDview, 32)
 GUICtrlSetTip(-1, "Edit Descripton")
 $idButton_upd = GUICtrlCreateButton("GuiUpdate", 712, 16, 60, 24)
 GUICtrlSetTip(-1, "GitHub mdictGui")
@@ -39,6 +40,7 @@ $Title = GUICtrlCreateEdit("File Title", 134, 11, 260, 45, BitOR($ES_MULTILINE,$
 $iButtonTitle = GUICtrlCreateButton("Title", 45, 12, 80, 22)
 $ButtonTview = GUICtrlCreateButton("View", 92, 36, 33, 20)
 GUICtrlSetBkColor(-1, 0xFFFBF0)
+GUICtrlSetState($ButtonTview, 32)
 GUICtrlSetTip(-1, "Edit Title")
 
 $GroupPackMDX = GUICtrlCreateGroup("Pack MDX / Convert TXT to Sqlite3DB", 24, 112, 393, 98)
@@ -248,10 +250,12 @@ GUISetState(@SW_SHOW)
 					Else
 		        $sDesc=1
 				GUICtrlSetData($Descr, $Descr1)
+				GUICtrlSetState($ButtonDview, 16)
 						EndIf
 					Else
 				$sDesc=1
 				GUICtrlSetData($Descr, $Descr1)
+				GUICtrlSetState($ButtonDview, 16)
 					EndIf
 					    EndIf
 					; Check file path for spaces.
@@ -860,10 +864,12 @@ GUISetState(@SW_SHOW)
 					Else
 		        $sTit=1
 				GUICtrlSetData($Title, $Title1)
+				GUICtrlSetState($ButtonTview, 16)
 						EndIf
 					Else
 				$sTit=1
 				GUICtrlSetData($Title, $Title1)
+				GUICtrlSetState($ButtonTview, 16)
 					EndIf
 					    EndIf
 					; Check file path for spaces.
