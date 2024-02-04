@@ -3,9 +3,9 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.9.5
+#AutoIt3Wrapper_Res_Fileversion=0.9.6
 #AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.9.5
+#AutoIt3Wrapper_Res_ProductVersion=0.9.6
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
@@ -18,9 +18,9 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.9.5", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.9.6", 792, 641, 192, 125)
 
-$iButtonMdict = GUICtrlCreateButton("Mdict", 406, 74, 45, 25)
+$iButtonMdict = GUICtrlCreateButton("Mdict", 409, 64, 40, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
 $Mdict = GUICtrlCreateEdit("", 454, 64, 244, 48, BitOR($ES_MULTILINE,$ES_READONLY))
 GUICtrlSetTip(-1, "Path of mdict-utils")
@@ -133,9 +133,9 @@ GUICtrlSetTip(-1, "Download it from github.com/BorisNA/wordforms")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $GroupConca = GUICtrlCreateGroup("Concatenate Morph dict + source Mdict", 440, 530, 325, 92)
-$iButtonMorph = GUICtrlCreateButton("Morphо", 446, 550, 40, 26)
+$iButtonMorph = GUICtrlCreateButton("Morphо", 446, 550, 42, 26)
 GUICtrlSetTip(-1, "Select Generated Morphological dictionary")
-$Morph = GUICtrlCreateEdit("Morphological txt", 490, 550, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
+$Morph = GUICtrlCreateEdit("Morphological txt", 494, 550, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 GUICtrlSetTip(-1, "Path of generated 'Morphological dictionary'")
 $iButtonConca = GUICtrlCreateButton("Concatenate", 676, 588, 73, 25)
 GUICtrlSetTip(-1, "Concatenate 'Morphological dictionary' with Selected 'Source Mdict'")
@@ -496,12 +496,12 @@ GUISetState(@SW_SHOW)
 				   				 If $sDesc = 0 Then
                    If MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
 				   & "with Title all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\All.mdx")=1 Then
-			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" -a "&$UnpDir&" "&$UnpDir&"\All.mdx", "", @SW_SHOWNORMAL)
+            $iPIDPack_all = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" -a "&$UnpDir&" "&$UnpDir&"\All.mdx", "", @SW_SHOWNORMAL)
 			          EndIf
 				   Else
 		           if MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
 				   &"with Title all TXT will be pack as :"& @CRLF&$UnpDir&"\All_descr.mdx")=1 Then
-			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
+			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
 			           EndIf
 					EndIf
 			EndIf
