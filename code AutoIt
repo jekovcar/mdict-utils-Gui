@@ -483,25 +483,25 @@ GUISetState(@SW_SHOW)
 		    If $sTit=0 Then
 				If $sDesc = 0 Then
                    If MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
-				   & "all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\All.mdx")=1 Then
-			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" -a "&$UnpDir&" "&$UnpDir&"\All.mdx", "", @SW_SHOWNORMAL)
+				   & "all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\Alldict.mdx")=1 Then
+			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" -a "&$UnpDir&" "&$UnpDir&"\Alldict.mdx", "", @SW_SHOWNORMAL)
 			           EndIf
 				   Else
 		           if MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
-				   &"all TXT will be pack as :"& @CRLF&$UnpDir&"\All_descr.mdx")=1 Then
-			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
+				   &"all TXT will be pack as :"& @CRLF&$UnpDir&"\Alldict_descr.mdx")=1 Then
+			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\Alldict_descr.mdx", "", @SW_SHOWNORMAL)
 				   EndIf
 				EndIf
 			Else
 				   				 If $sDesc = 0 Then
                    If MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
-				   & "with Title all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\All.mdx")=1 Then
-            $iPIDPack_all = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" -a "&$UnpDir&" "&$UnpDir&"\All.mdx", "", @SW_SHOWNORMAL)
+				   & "with Title all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\Alldict_title.mdx")=1 Then
+            $iPIDPack_all = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" -a "&$UnpDir&" "&$UnpDir&"\Alldict_title.mdx", "", @SW_SHOWNORMAL)
 			          EndIf
 				   Else
 		           if MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
-				   &"with Title all TXT will be pack as :"& @CRLF&$UnpDir&"\All_descr.mdx")=1 Then
-			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\All_descr.mdx", "", @SW_SHOWNORMAL)
+				   &"with Title all TXT will be pack as :"& @CRLF&$UnpDir&"\Alldict_title_descr.mdx")=1 Then
+			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\Alldict_title_descr.mdx", "", @SW_SHOWNORMAL)
 			           EndIf
 					EndIf
 			EndIf
