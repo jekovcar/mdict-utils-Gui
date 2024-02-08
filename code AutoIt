@@ -3,9 +3,9 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.9.6
+#AutoIt3Wrapper_Res_Fileversion=0.9.7
 #AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.9.6
+#AutoIt3Wrapper_Res_ProductVersion=0.9.7
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
@@ -14,11 +14,12 @@
 #include <EditConstants.au3>
 #include <WindowsConstants.au3>
 #include <WinAPIShPath.au3>
+#include <File.au3>
 
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.9.6", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.9.7", 792, 641, 192, 125)
 
 $iButtonMdict = GUICtrlCreateButton("Mdict", 409, 64, 40, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
@@ -48,7 +49,9 @@ $idButton_BrowseUnp = GUICtrlCreateButton("Select MTXT", 45, 130, 80, 22)
 $Unp = GUICtrlCreateEdit("Source Mdict", 134, 130, 260, 45, BitOR($ES_MULTILINE,$ES_READONLY))
 $idButton_Pack = GUICtrlCreateButton("Make MDX", 45, 181, 80, 22)
 $idButton_PackDir = GUICtrlCreateButton("Pack All TXT", 140, 181, 80, 22)
-GUICtrlSetTip(-1, "Pack MDX with many TXT files")
+GUICtrlSetTip(-1, "Pack MDX with all source text files")
+$idButton_PackDirNos = GUICtrlCreateButton("Pack All Splits", 228, 181, 80, 22)
+GUICtrlSetTip(-1, "Pack MDX with all source splits (PyGlossary).")
 $idButton_ConvSqlit = GUICtrlCreateButton("Conv TXT Sql3", 315, 181, 84, 22)
 GUICtrlSetTip(-1, "Convert TXT to sqlite3 DB")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -508,7 +511,55 @@ GUISetState(@SW_SHOW)
 				  EndIf
 		    EndSelect
 
-		; Select Button_UnPackMDX/MDD to DB-------------------------15
+		; Select Button_Pack All splits----------------------------15
+            Select
+                Case $msg = $idButton_PackDirNos
+				 If $sUnp = 0 Then
+				   MsgBox(8192, "", "You are not chosen at last one Mdict source")
+				 Else
+             ;=======================================
+             Local $FileDir = StringRegExpReplace($Un_, "\\[^\\]*$", "")
+             Local $FileName = StringRegExpReplace($Un_, "^.*\\", "")
+             Global $sPathToFiles = $FileDir&"\"
+		If MsgBox(1, "Your choice","Wont to index all '"&$FileName&"' source splits in dir:"& @CRLF & ""&$sPathToFiles&""& @CRLF & "with numbers for Pack All Splits" )=1 Then
+                Global $newFileName = 0 ,$aFilesToRename = ""
+                $aFilesToRename = _FileListToArray($sPathToFiles, "*.*", 1)
+              For $i = 1 To $aFilesToRename[0]
+                $newFileName += 1
+			    FileMove($sPathToFiles & $aFilesToRename[$i], $sPathToFiles & $FileName&"."&String($newFileName) & ".txt", 0)
+		      Next
+            ;=======================================
+		    If $sTit=0 Then
+				If $sDesc = 0 Then
+                   If MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
+				   & "all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\Allsplit.mdx")=1 Then
+			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" -a "&$UnpDir&" "&$UnpDir&"\Allsplit.mdx", "", @SW_SHOWNORMAL)
+			           EndIf
+				   Else
+		           if MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
+				   &"all TXT will be pack as :"& @CRLF&$UnpDir&"\Allsplit_descr.mdx")=1 Then
+			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\Allsplit_descr.mdx", "", @SW_SHOWNORMAL)
+				   EndIf
+				EndIf
+			Else
+				   				 If $sDesc = 0 Then
+                   If MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
+				   & "with Title all TXT will be pack without Description as :"& @CRLF &$UnpDir&"\Allsplit_title.mdx")=1 Then
+            $iPIDPack_all = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" -a "&$UnpDir&" "&$UnpDir&"\Allsplit_title.mdx", "", @SW_SHOWNORMAL)
+			          EndIf
+				   Else
+		           if MsgBox(1, "Your choice","In selected Mdict Folder :"& @CRLF & ""&$UnpDir&""& @CRLF _
+				   &"with Title all TXT will be pack as :"& @CRLF&$UnpDir&"\Allsplit_title_descr.mdx")=1 Then
+			$iPIDPack_all = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" --description "&GUICtrlRead($Descr)&" -a "&$UnpDir&" "&$UnpDir&"\Allsplit_title_descr.mdx", "", @SW_SHOWNORMAL)
+			           EndIf
+					EndIf
+			EndIf
+				   EndIf
+				 EndIf
+
+		    EndSelect
+
+		; Select Button_UnPackMDX/MDD to DB-------------------------16
             Select
 				Case $msg = $idButton_UnpMDX_DB
 			     If $sPack = 0 Then
@@ -535,7 +586,7 @@ GUISetState(@SW_SHOW)
 			       EndIf
 			EndSelect
 
-		; Select Button_UnPackMDX/MDD to DBzip-----------------------16
+		; Select Button_UnPackMDX/MDD to DBzip-----------------------17
             Select
                 Case $msg = $idButton_UnpMDX_DBzip
 			     If $sPack = 0  Then
@@ -563,13 +614,13 @@ GUISetState(@SW_SHOW)
 				    EndIf
 			EndSelect
 
-		; Select Choise Combo Split Parts----------------------------17
+		; Select Choise Combo Split Parts----------------------------18
             Select
                 Case $msg = $ComboSplit
 				$sComboRead = GUICtrlRead($ComboSplit)
 			EndSelect
 
-		; Select Button_UnPack MDX/MDD to Splits---------------------18
+		; Select Button_UnPack MDX/MDD to Splits---------------------19
             Select
                 Case $msg = $idButton_UnpSplit
 			        If $sPack = 0  Then
@@ -602,21 +653,21 @@ GUISetState(@SW_SHOW)
 			       EndIf
 			EndSelect
 
-		; Select Button GuiUpdate------------------------------------19
+		; Select Button GuiUpdate------------------------------------20
             Select
                 Case $msg = $idButton_upd
 				If MsgBox(1,"Check the latest mdictGui releases", "Want to check the GitHub repository"& @CRLF & _
 				"for the latest mdictGui releases?") = 1 Then ShellExecute("https://github.com/jekovcar/mdict-utils-Gui/releases")
 			EndSelect
 
-		; Select Button mdict Pypi-------------------------------20
+		; Select Button mdict Pypi-------------------------------21
             Select
                  Case $msg = $idButton_pypi
 				If MsgBox(1,"Check the latest mdict-utils", "Want to check Project mdict-utils"& @CRLF & _
 				"on Pypi.Org for the latest releases?") = 1 Then ShellExecute("https://pypi.org/project/mdict-utils/")
 			EndSelect
 
-		; Select button Query key--------------------------------21
+		; Select button Query key--------------------------------22
             Select
                 Case $msg = $idButton_key
 						$inp=GUICtrlRead($inp_word)
@@ -635,7 +686,7 @@ GUISetState(@SW_SHOW)
 				 EndIf
 			EndSelect
 
-		; Select path of  PYTHON ------------------------------22
+		; Select path of  PYTHON ------------------------------23
 			Select
 				Case $msg = $iButtonPython
 		        $sMessagePack = "Please select path of PYTHON."
@@ -653,7 +704,7 @@ GUISetState(@SW_SHOW)
                   EndIf
 			EndSelect
 
-		; Select script of  addflex py---------------------------23
+		; Select script of  addflex py---------------------------24
 			Select
                 Case $msg = $iButton_flexpy
 		        $sMessagePack = "Please select PY script addflex_mdx."
@@ -680,7 +731,7 @@ GUISetState(@SW_SHOW)
                   EndIf
 			EndSelect
 
-		; Select file of  WordForm-----------------------------24
+		; Select file of  WordForm-----------------------------25
 			Select
                 Case $msg = $iButtonForm
 		        $sMessagePack = "Please select file of WordForm."
@@ -703,13 +754,13 @@ GUISetState(@SW_SHOW)
 				EndIf
 			EndSelect
 
-		; Select Choise Combo Inflex----------------------------25
+		; Select Choise Combo Inflex----------------------------26
             Select
                 Case $msg = $ComboInflex
 				$sComboReadInflex = GUICtrlRead($ComboInflex)
 			EndSelect
 
-		; Select Button_ConvertFlex ----------------------------26
+		; Select Button_ConvertFlex ----------------------------27
 			Select
 				Case $msg = $iButtonConvFlex
 			     If GUICtrlRead($Pyth)="" Or GUICtrlRead($flexpy)="" Or $sForms=0 Then
@@ -739,7 +790,7 @@ GUISetState(@SW_SHOW)
 				EndIf
 			EndSelect
 
-		; Select file of  Morphological inflection---------------27
+		; Select file of  Morphological inflection---------------28
 			Select
                 Case $msg = $iButtonMorph
 		        $sMessagePack = "Please select Morphological inflection."
@@ -756,7 +807,7 @@ GUISetState(@SW_SHOW)
                   EndIf
 			EndSelect
 
-		; Select Button_Concatenate-----------------------------28
+		; Select Button_Concatenate-----------------------------29
             Select
                 Case $msg = $iButtonConca
 			     If $sMorph = 0 or $sUnp=0 Then
@@ -768,14 +819,14 @@ GUISetState(@SW_SHOW)
 				   EndIf
 			EndSelect
 
-		; Select Button InfoFlex--------------------------------29
+		; Select Button InfoFlex--------------------------------30
             Select
                 Case $msg = $iButtonInfoFlex
-				If MsgBox(1,"Github addflex", "Go to Github addflex release"& @CRLF & _
-				"for Introduction to addflex?") = 1 Then ShellExecute("https://github.com/BorisNA/addflex#introduction-to-addflex")
+				If MsgBox(1,"Help addflex", "Go to Github for info addflex"& @CRLF & _
+				"and guide 'How to addflex' ?") = 1 Then ShellExecute("https://github.com/jekovcar/mdict-utils-Gui/blob/main/Use%20mdict-utils-Gui.pdf")
 			EndSelect
 
-		; Select path of  Kobo dict -----------------------------30
+		; Select path of  Kobo dict -----------------------------31
 			Select
                 Case $msg = $iButtonKobo
 		        $sMessagePack = "Please select Kobo dictionary."
@@ -792,7 +843,7 @@ GUISetState(@SW_SHOW)
                   EndIf
 			EndSelect
 
-		; Select path of Mdict.exe-------------------------------31
+		; Select path of Mdict.exe-------------------------------32
             Select
                 Case $msg = $iButtonMdict
                 $Mdict1 = FileOpenDialog("Please select your Mdict.exe.", @desktopdir & "\", "Mdict  (Mdict.exe)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
@@ -810,7 +861,7 @@ GUISetState(@SW_SHOW)
                   EndIf
 			EndSelect
 
-		; Select path of  Fscript ------------------------------32
+		; Select path of  Fscript ------------------------------33
 			Select
                 Case $msg = $iButtonFscript
 		        $sMessagePack = "Please select path of wordform script."
@@ -828,7 +879,7 @@ GUISetState(@SW_SHOW)
                   EndIf
 			EndSelect
 
-		; Select Button_Check-----------------------------------33
+		; Select Button_Check-----------------------------------34
             Select
                 Case $msg = $iButtonCheck
 			     If GUICtrlRead($FScript) = "" or $sForms=0 Then
@@ -838,7 +889,7 @@ GUISetState(@SW_SHOW)
 				   EndIf
 			EndSelect
 
-		; Select File Title------------------------------------34
+		; Select File Title------------------------------------35
 			Select
 				Case $msg = $iButtonTitle
                     $sMessageDescr = "Please select a Title."
@@ -878,7 +929,7 @@ GUISetState(@SW_SHOW)
 					EndIf
 			EndSelect
 
-					; Button_Title View-----------------------------35
+					; Button_Title View-----------------------------36
            Select
 			   Case $msg = $ButtonTview
 				   If $sTit=1 Then
@@ -887,7 +938,7 @@ GUISetState(@SW_SHOW)
                     EndIf
 		   EndSelect
 
-					;  Button_Description View----------------------36
+					;  Button_Description View----------------------37
            Select
 			   Case $msg = $ButtonDview
 				   If $sDesc=1 Then
