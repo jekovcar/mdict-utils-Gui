@@ -521,9 +521,10 @@ GUISetState(@SW_SHOW)
              Local $FileDir = StringRegExpReplace($Un_, "\\[^\\]*$", "")
              Local $FileName = StringRegExpReplace($Un_, "^.*\\", "")
              Global $sPathToFiles = $FileDir&"\"
-		If MsgBox(1, "Your choice","Wont to index all '"&$FileName&"' source splits in dir:"& @CRLF & ""&$sPathToFiles&""& @CRLF & "with numbers for Pack All Splits" )=1 Then
+		    If MsgBox(1, "Your choice","Wont to rename all '"&$FileName&"' source splits in dir:"& @CRLF & ""&$sPathToFiles&""& @CRLF _
+			& "with numbers, for the action 'Pack All Splits'"& @CRLF & @CRLF &  "Note. The Name & Description files should not be in the dir:"& @CRLF &""&$sPathToFiles&"" )=1 Then
                 Global $newFileName = 0 ,$aFilesToRename = ""
-                $aFilesToRename = _FileListToArray($sPathToFiles, "*.*", 1)
+                $aFilesToRename = _FileListToArray($sPathToFiles, "*.??", 1)
               For $i = 1 To $aFilesToRename[0]
                 $newFileName += 1
 			    FileMove($sPathToFiles & $aFilesToRename[$i], $sPathToFiles & $FileName&"."&String($newFileName) & ".txt", 0)
