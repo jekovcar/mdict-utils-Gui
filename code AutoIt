@@ -362,8 +362,13 @@ GUISetState(@SW_SHOW)
 		; Select Button_Mdict_version------------------------7
            Select
 			   Case $msg = $idButton_vers
+				If GUICtrlRead($Pyth) = "" Then
+				   $iPIDversMdict = Run(@ComSpec & " /k "&GUICtrlRead($Mdict)&" --version", "", @SW_HIDE, $STDOUT_CHILD+$STDERR_CHILD)
+				Else
 				   $iPIDversMdict = Run(@ComSpec & " /k "&GUICtrlRead($Mdict)&" --version", "", @SW_HIDE, $STDOUT_CHILD+$STDERR_CHILD)
 				   $iPIDversPyth = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" --version", "", @SW_HIDE, $STDOUT_CHILD+$STDERR_CHILD)
+				   Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" -m pip list", "", @SW_SHOWNORMAL)
+				   EndIf
                       Global $ResponsePyth , $ResponseMdict
                 While 1
                   If GUICtrlRead($Mdict) = "" Then
