@@ -366,13 +366,18 @@ GUISetState(@SW_SHOW)
 				   $iPIDversPyth = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" --version", "", @SW_HIDE, $STDOUT_CHILD+$STDERR_CHILD)
                       Global $ResponsePyth , $ResponseMdict
                 While 1
-				    $ResponsePyth &= StdoutRead($iPIDversPyth)
+                  If GUICtrlRead($Mdict) = "" Then
+					$ResponsePyth &= StdoutRead($iPIDversPyth)
+				    ;$ResponseMdict &= StdoutRead($iPIDversMdict)
+				  Else
+					$ResponsePyth &= StdoutRead($iPIDversPyth)
 				    $ResponseMdict &= StdoutRead($iPIDversMdict)
+					EndIf
                   If @error Then ExitLoop
 				Wend
 				    $ResponseMdict = StringReplace($ResponseMdict, @WorkingDir&">", "")
 					$ResponsePyth = StringReplace($ResponsePyth, @WorkingDir&">", "")
-                  MsgBox(0, "Check Versions","Mdict ===> " &$ResponseMdict& "Python ==> " & $ResponsePyth)
+                  MsgBox(0, "Check Versions","Mdict ===> " &$ResponseMdict& @CRLF & "Python ==> " & $ResponsePyth)
 					  Global $ResponsePyth = "" , $ResponseMdict = ""
 			EndSelect
 
