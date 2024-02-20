@@ -3,9 +3,9 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.9.7
+#AutoIt3Wrapper_Res_Fileversion=0.9.8
 #AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.9.7
+#AutoIt3Wrapper_Res_ProductVersion=0.9.8
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
@@ -19,7 +19,7 @@
 MDictGUI()
 
 Func MDictGUI()
-$hGUI1 = GUICreate("mdictGui 0.9.7", 792, 641, 192, 125)
+$hGUI1 = GUICreate("mdictGui 0.9.8", 792, 641, 192, 125)
 
 $iButtonMdict = GUICtrlCreateButton("Mdict", 409, 64, 40, 25)
 GUICtrlSetTip(-1, "Select Mdict.exe")
@@ -130,7 +130,7 @@ GUICtrlSetTip(-1, "Select , a target dictionary to generate")
 $iButtonFscript = GUICtrlCreateButton("FScript", 446, 464, 42, 26)
 GUICtrlSetTip(-1, "Select check_wordforms script")
 $iButtonCheck = GUICtrlCreateButton("Check", 446, 494, 42, 22)
-GUICtrlSetTip(-1, "Check wordforms")
+GUICtrlSetTip(-1, "It's recommended to Check Forms before converting")
 $FScript = GUICtrlCreateEdit("wordform script py", 494, 478, 260, 32, BitOR($ES_MULTILINE,$ES_READONLY))
 GUICtrlSetTip(-1, "Download it from github.com/BorisNA/wordforms")
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -896,7 +896,22 @@ GUISetState(@SW_SHOW)
 			     If GUICtrlRead($FScript) = "" or $sForms=0 Then
 				   MsgBox(8192, "", "You are not chosen needed file paths")
 				 Else
-				    $iPIDfscript = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" "&GUICtrlRead($FScript)&" "&GUICtrlRead($WordForm), "", @SW_SHOWNORMAL)
+				    $iPIDfscript = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" "&GUICtrlRead($FScript)&" "&GUICtrlRead($WordForm), "", @SW_HIDE, $STDOUT_CHILD+$STDERR_CHILD)
+					                      Global $ResponseCheck
+                While 1
+				    $ResponseCheck &= StdoutRead($iPIDfscript)
+                  If @error Then ExitLoop
+				Wend
+					$ResponseCheck = StringReplace($ResponseCheck, @WorkingDir&">", "")
+					If StringInStr($ResponseCheck,"WARN") = 0 And StringInStr($ResponseCheck,"ERR") = 0 Then
+						MsgBox(0, "Check Formss", $ResponseCheck & @CRLF & "The Word Form file is OK")
+					Else
+						If MsgBox(1, "Check Formss", $ResponseCheck & @CRLF & "Please to view & fix :" & @CRLF & @WorkingDir& "\check_wordforms.log"& @CRLF _
+					&@CRLF &"WARN can be ignored, but some inflections will be invalid."&@CRLF &"ERR won't generate valid inflections") = 1 Then
+						Run ( "notepad.exe " &@WorkingDir& "\check_wordforms.log" , @WindowsDir, @SW_SHOWNORMAL )
+						    EndIf
+						EndIf
+					  Global $ResponseCheck = ""
 				   EndIf
 			EndSelect
 
