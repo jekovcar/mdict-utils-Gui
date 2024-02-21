@@ -782,12 +782,18 @@ GUISetState(@SW_SHOW)
 				If StringInStr(GUICtrlRead($flexpy), "addflex_df.py") > 0 Then MsgBox( 0, "", "Selected Scrip for Kobo dict NOT convert properly.")
 				If MsgBox(1, "Standalone inflection","You choose WordForm file:"& @CRLF & ""&GUICtrlRead($WordForm)&""& @CRLF &"will be convert to: "&$Form&"_infl.txt")= 1 Then
                    $iPIDConvFlex = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" "&GUICtrlRead($flexpy)&" -t "&GUICtrlRead($WordForm)&" -o "&$Form&"_infl.txt", "", @SW_SHOWNORMAL)
-                      EndIf
+						$Un_= $Form&"_infl"
+						$sUnp=1
+				        GUICtrlSetData($Unp, $Form&"_infl.txt" )
+					        EndIf
 				ElseIf $sComboReadInflex = "Morphological dictionary" Then
 				If StringInStr(GUICtrlRead($flexpy), "addflex_df.py") > 0 Then MsgBox( 0, "", "Selected Scrip for Kobo dict NOT convert properly.")
 				If MsgBox(1, "Morphological dictionary","You choose WordForm file:"& @CRLF & ""&GUICtrlRead($WordForm)&""& @CRLF &"will be convert to: "&$Form&"_morph.txt")= 1 Then
                    $iPIDConvFlex = Run(@ComSpec & " /k "&GUICtrlRead($Pyth)&" "&GUICtrlRead($flexpy)&" -l -t "&GUICtrlRead($WordForm)&" -o "&$Form&"_morph.txt", "", @SW_SHOWNORMAL)
-				      EndIf
+						$Morph_= $Form&"_morph"
+						$sMorph=1
+		                GUICtrlSetData($Morph, $Form&"_morph.txt" )
+				            EndIf
 				Else
                 If $skob =0 Then
 				   MsgBox(8192, "", "You are not chosen needed Kobo dictfile path")
@@ -824,8 +830,13 @@ GUISetState(@SW_SHOW)
 			     If $sMorph = 0 or $sUnp=0 Then
 				   MsgBox(8192, "", "You are not chosen needed file paths")
 				 Else
-				   If MsgBox(1,"Concatenate", "Concatenate 'Morpho dict' with 'source Mdict' to:"& @CRLF &  $Morph_&"_concat.txt ?") = 1 Then
-				   $iPIDconcat = Run(@ComSpec & " /k ""copy "& GUICtrlRead($Unp)&"+"& GUICtrlRead($Morph)&" "&  $Morph_&"_concat.txt", "", @SW_SHOWNORMAL)
+				   $Um_=_WinAPI_PathRemoveExtension(GUICtrlRead($Unp))
+	               $Um_=_WinAPI_PathRemoveExtension($Um_)
+				   If MsgBox(1,"Concatenate", "Concatenate 'Morpho dict' with 'source Mdict' to:"& @CRLF &  $Um_&"_morph.concat.txt ?") = 1 Then
+				   $iPIDconcat = Run(@ComSpec & " /k ""copy "& GUICtrlRead($Unp)&"+"& GUICtrlRead($Morph)&" "&  $Um_&"_morph.concat.txt", "", @SW_SHOWNORMAL)
+						$Un_= $Um_&"_morph"
+						$sUnp=1
+				        GUICtrlSetData($Unp, $Um_&"_morph.concat.txt" )
 				       EndIf
 				   EndIf
 			EndSelect
@@ -904,7 +915,7 @@ GUISetState(@SW_SHOW)
 				Wend
 					$ResponseCheck = StringReplace($ResponseCheck, @WorkingDir&">", "")
 					If StringInStr($ResponseCheck,"WARN") = 0 And StringInStr($ResponseCheck,"ERR") = 0 Then
-						MsgBox(0, "Check Formss", $ResponseCheck & @CRLF & "The Word Form file is OK")
+						MsgBox(0, "Check Formss", $ResponseCheck & @CRLF & "The Word Forms file is OK")
 					Else
 						If MsgBox(1, "Check Formss", $ResponseCheck & @CRLF & "Please to view & fix :" & @CRLF & @WorkingDir& "\check_wordforms.log"& @CRLF _
 					&@CRLF &"WARN can be ignored, but some inflections will be invalid."&@CRLF &"ERR won't generate valid inflections") = 1 Then
