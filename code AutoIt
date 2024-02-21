@@ -311,26 +311,34 @@ GUISetState(@SW_SHOW)
 				   Else
 				If $sTit=0 Then
 				    If $sDesc = 0 Then
-                        If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($Unp)&""& @CRLF & _
+                        If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & GUICtrlRead($Unp) & @CRLF & _
 				   "will be pack without Description as:"& @CRLF &$Un_&".mdx") = 1 Then
 				   $iPIDPack = Run(GUICtrlRead($Mdict)&" -a "&GUICtrlRead($Unp)&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+				   		         $sPack=1
+		                         GUICtrlSetData($Pack, $Un_&".mdx" )
 						EndIf
 					Else
 						If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF _
-				   & ""&GUICtrlRead($Unp)&""& @CRLF &"will be pack as:"& @CRLF &$Un_&".mdx") = 1 Then
+				   & GUICtrlRead($Unp) & @CRLF &"will be pack as:"& @CRLF &$Un_&".mdx") = 1 Then
 				   $iPIDPack = Run(GUICtrlRead($Mdict)&" --description "&GUICtrlRead($Descr)&" -a "&GUICtrlRead($Unp)&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+						         $sPack=1
+		                         GUICtrlSetData($Pack, $Un_&".mdx" )
 						EndIf
 					EndIf
 				Else
 				    If $sDesc = 0 Then
-                        If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & ""&GUICtrlRead($Unp)&""& @CRLF & _
+                        If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF & GUICtrlRead($Unp) & @CRLF & _
 				   "with Title will be pack without Description as:"& @CRLF &$Un_&".mdx") = 1 Then
 				   $iPIDPack = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" -a "&GUICtrlRead($Unp)&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+								$sPack=1
+		                         GUICtrlSetData($Pack, $Un_&".mdx" )
 						EndIf
-					Else
+						Else
 				        If MsgBox(1, "Your choice","You choose Mdict source:"& @CRLF _
-				   & ""&GUICtrlRead($Unp)&""& @CRLF &"with Title will be pack as:"& @CRLF &$Un_&".mdx") = 1 Then
+				   & GUICtrlRead($Unp) & @CRLF &"with Title will be pack as:"& @CRLF &$Un_&".mdx") = 1 Then
 				   $iPIDPack = Run(GUICtrlRead($Mdict)&" --title "&GUICtrlRead($Title)&" --description "&GUICtrlRead($Descr)&" -a "&GUICtrlRead($Unp)&" "&$Un_&".mdx", "", @SW_SHOWNORMAL)
+								$sPack=1
+		                         GUICtrlSetData($Pack, $Un_&".mdx" )
 						EndIf
 					EndIf
 				EndIf
