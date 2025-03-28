@@ -34,8 +34,8 @@ Func MDictGUI()
 	GUICtrlSetState($ButtonDclean, 32)
 	$idButton_upd = GUICtrlCreateButton("GuiUpdate", 712, 16, 60, 24)
 	GUICtrlSetTip(-1, "GitHub mdictGui")
-	$idButton_vers = GUICtrlCreateButton("MdictVers", 712, 86, 60, 24)
-	GUICtrlSetTip(-1, "Display Mdict-utils & Python versions")
+	$idButton_vers = GUICtrlCreateButton("MdictTest", 712, 86, 60, 24)
+	GUICtrlSetTip(-1, "Test Mdict-utils & Python versions")
 	$idButton_pypi = GUICtrlCreateButton("MdictUpd", 712, 50, 60, 24)
 	GUICtrlSetTip(-1, "pypi.org/project/mdict-utils/")
 	$Descr = GUICtrlCreateEdit("File Descripton", 134, 64, 260, 45, BitOR($ES_MULTILINE, $ES_READONLY))
@@ -399,7 +399,7 @@ Func MDictGUI()
 				WEnd
 				$ResponseMdict = StringReplace($ResponseMdict, @WorkingDir & ">", "")
 				$ResponsePyth = StringReplace($ResponsePyth, @WorkingDir & ">", "")
-				MsgBox(0, "Check Versions", "Mdict ===> " & $ResponseMdict & @CRLF & "Python ==> " & $ResponsePyth)
+				MsgBox(0, "Test Mdict Version", "Mdict ===> " & $ResponseMdict & @CRLF & "Python ==> " & $ResponsePyth)
 				Global $ResponsePyth = "", $ResponseMdict = ""
 		EndSelect
 
