@@ -3,9 +3,9 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_Res_Description=mdict-utils winGui on AutoIt
-#AutoIt3Wrapper_Res_Fileversion=0.9.9
+#AutoIt3Wrapper_Res_Fileversion=1.0.0
 #AutoIt3Wrapper_Res_ProductName=mdictGui
-#AutoIt3Wrapper_Res_ProductVersion=0.9.9
+#AutoIt3Wrapper_Res_ProductVersion=1.0.0
 #AutoIt3Wrapper_Res_CompanyName=jekovcar
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <GUIConstantsEx.au3>
@@ -19,7 +19,7 @@
 MDictGUI()
 
 Func MDictGUI()
-	$hGUI1 = GUICreate("mdictGui 0.9.9", 792, 641, 192, 125)
+	$hGUI1 = GUICreate("mdictGui 1.0.0", 792, 641, 192, 125)
 
 	$iButtonMdict = GUICtrlCreateButton("Mdict", 409, 64, 40, 25)
 	GUICtrlSetTip(-1, "Select Mdict.exe")
@@ -220,7 +220,10 @@ Func MDictGUI()
 		If MsgBox(262209, "Check Mdict-utils", "'mdict.exe' doesn't exist. Mdict section won't work." & @CRLF & @CRLF & _
 				"Pls visit, " & "github/liuyug/mdict-utils" & @CRLF & _
 				"to download last 'mdict-windows'.") = 1 Then ShellExecute("https://github.com/liuyug/mdict-utils/releases")
-		GUICtrlCreateLabel("'mdict-utils' does not exist. Mdict section won't work", 108, 160, 309, 20)
+		GUICtrlCreateLabel("'mdict-utils' does not exist. Mdict section won't work >", 108, 160, 309, 20)
+		GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
+		GUICtrlSetBkColor(-1, 0xFFFF00)
+		GUICtrlCreateLabel(" B"& @CRLF &"  r"& @CRLF &"  o"& @CRLF &"  w"& @CRLF &"  s"& @CRLF &"  e", 418, 94, 18, 96)
 		GUICtrlSetFont(-1, 10, 400, 0, "MS Sans Serif")
 		GUICtrlSetBkColor(-1, 0xFFFF00)
 	Else
