@@ -895,7 +895,7 @@ Func MDictGUI()
 						$Mdict1 = StringReplace($Mdict1, "|", @CRLF)
 						GUICtrlSetData($Mdict, $Mdict1)
 						IniWrite($line & "\mdictGui_.ini", "Mdict", "MdictPath", GUICtrlRead($Mdict))
-						MsgBox(0, "", "Pls to restart Gui for effect.")
+						MsgBox(0, "", "Pls to restart Gui & Run 'Mdict Test' for effect.")
 					EndIf
 				EndIf
 		EndSelect
